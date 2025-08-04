@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Generador Avanzado de Features Gherkin</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      max-width: 1000px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #003366;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .section {
+      background: #f8f9fa;
+      padding: 15px;
+      border-left: 4px solid #007bff;
+      margin-bottom: 25px;
+      border-radius: 4px;
+      position: relative;
+    }
+    .gherkin-label {
+      font-weight: normal;
+      font-size: 13px;
+      color: #555;
+      margin-left: 8px;
+    }
+    .pruebas-unitarias-block {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 10px 10px 5px 10px;
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
+    .pruebas-unitarias-block b {
+      color: #007bff;
+    }
+    .pruebas-unitarias-block ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 8px;
+    }
+    .pruebas-unitarias-block li {
+      margin-bottom: 5px;
+    }
+    .pruebas-unitarias-block input {
+      width: 80%;
+      display: inline-block;
+      margin-bottom: 0;
+    }
+    .pruebas-unitarias-block button {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 2px 8px;
+      font-size: 13px;
+      margin-left: 5px;
+      margin-right: 0;
+    }
+    .pruebas-unitarias-block button.add {
+      background: #28a745;
+      margin-left: 0;
+      margin-bottom: 5px;
+    }
+    .output pre {
+      background: #f4f6f8;
+      border-radius: 6px;
+      padding: 15px;
+      font-size: 15px;
+      overflow-x: auto;
+    }
+    .borrar-btn {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 2px 8px;
+      font-size: 13px;
+      margin-left: 10px;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+    .borrar-btn:hover {
+      background: #b52a37;
+    }
+    .objetivo-section {
+      border-left: 4px solid #28a745;
+      margin-bottom: 30px;
+      background: #f6fff6;
+    }
+    .objetivo-header, .func-header, .hist-header, .crit-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .objetivo-header h2, .func-header h3, .hist-header h4, .crit-header h5 {
+      margin: 0;
+      font-size: 1.2em;
+      color: #28a745;
+      flex: 1;
+    }
+    .func-header h3 { color: #007bff; }
+    .hist-header h4 { color: #17a2b8; }
+    .crit-header h5 { color: #6f42c1; }
+    .expand-btn {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 2px 8px;
+      font-size: 13px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    .expand-btn[aria-expanded="true"] {
+      background: #0056b3;
+    }
+    .tooltip-icon {
+      margin-left: 5px;
+      color: #007bff;
+      cursor: pointer;
+      font-size: 1.1em;
+    }
+	
+	    /* Modal styles */
+	#modalAyuda {
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 100%;
+	  z-index: 9999;
+	}
+
+	.modal-overlay {
+	  position: absolute;
+	  width: 100%;
+	  height: 100%;
+	  background: rgba(0,0,0,0.5);
+	}
+
+	.modal-content {
+	  position: absolute;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	  background: white;
+	  max-width: 600px;
+	  width: 90%;
+	  padding: 30px 20px;
+	  border-radius: 8px;
+	  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+	  z-index: 10000;
+	}
+
+	.modal-content h2 {
+	  margin-top: 0;
+	  font-size: 22px;
+	  color: #003366;
+	}
+
+	.modal-pre {
+	  white-space: pre-wrap;
+	  font-family: "Segoe UI", sans-serif;
+	  font-size: 15px;
+	  line-height: 1.6;
+	  color: #333;
+	  max-height: 400px;
+	  overflow-y: auto;
+	  margin-bottom: 20px;
+	}
+
+	.modal-content button {
+	  background: #007bff;
+	  color: white;
+	  padding: 10px 15px;
+	  border: none;
+	  border-radius: 5px;
+	  cursor: pointer;
+	}
+
+	.modal-content button:hover {
+	  background: #0056b3;
+	}
+
+    .section {
+      background: #f8f9fa;
+      padding: 15px;
+      border-left: 4px solid #007bff;
+      margin-bottom: 25px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="margin-bottom: 0;">Consenso</h1>
+<p style="font-size: 1.1em; color: #555; margin-top: 5px; margin-bottom: 25px;">
+  Crea el software correcto de la forma correcta a través del consenso participativo y colaborativo de un grupo de personas para generar características en formato Gherkin. Crea, documenta y descarga tus escenarios de negocio en formato <b>.feature</b> de manera ágil y propositiva.
+</p>
+
+    <label>
+      🌟 Visión
+      <span class="tooltip-icon" onclick="mostrarModalAyuda('Visión')">❓</span>
+    </label>
+    <input id="visionGeneral" placeholder="Ej: Ser líderes en gestión de talento digital" />
+
+    <div id="objetivos"></div>
+    <button onclick="agregarObjetivo()">➕ Añadir Objetivo de Negocio</button>
+    <button onclick="descargarFeatures()">⬇️ Descargar Features</button>
+    <button onclick="verPrevisualizacion()">👁️ Ver Previsualización</button>
+    <button onclick="guardarTrabajo()">💾 Guardar Trabajo</button>
+    <input type="file" onchange="cargarTrabajo(this)" />
+
+    <div class="output" id="previsualizacion" style="display: none;">
+      <h2>📄 Previsualización</h2>
+      <div id="previewContent"></div>
+    </div>
+  </div>
+
+  <!-- Modal de Ayuda -->
+  <div id="modalAyuda" style="display: none;">
+    <div class="modal-overlay" onclick="cerrarModalAyuda()"></div>
+    <div class="modal-content">
+      <h2 id="modalTitulo">🛈 Ayuda</h2>
+      <pre id="modalContenido" class="modal-pre"></pre>
+      <button onclick="cerrarModalAyuda()">Cerrar</button>
+    </div>
+  </div>
+
+<script>
+let vision = "";
+let objetivos = []; // Inicializa vacío
+
+function renderObjetivos() {
+  document.getElementById("objetivos").innerHTML = "";
+  objetivos.forEach((obj, idx) => {
+    const div = document.createElement("div");
+    div.className = "section objetivo-section";
+    div.id = `objetivo-${idx}`;
+    div.innerHTML = `
+      <div class="objetivo-header">
+        <h2>
+          🎯 Objetivo de Negocio ${idx + 1}
+          <span class="tooltip-icon" onclick="mostrarModalAyuda('Objetivo de negocio')">❓</span>
+        </h2>
+        <div>
+          <button class="expand-btn" aria-expanded="true" onclick="toggleSection(this, 'objetivo-body-${idx}')">▼</button>
+          <button class="borrar-btn" onclick="borrarObjetivo(${idx})">🗑️ Borrar Objetivo</button>
+        </div>
+      </div>
+      <div class="objetivo-body" id="objetivo-body-${idx}">
+        <label>ID Objetivo <span class="tooltip-icon" onclick="mostrarModalAyuda('ID Objetivo')">❓</span></label>
+        <input class="objetivo-id" value="${obj.id}" />
+        <label>Descripción <span class="tooltip-icon" onclick="mostrarModalAyuda('Descripción Objetivo')">❓</span></label>
+        <input class="objetivo-desc" value="${obj.descripcion}" />
+        <label>KPI / Métrica de éxito <span class="tooltip-icon" onclick="mostrarModalAyuda('KPI')">❓</span></label>
+        <input class="objetivo-kpi" value="${obj.kpi || ''}" placeholder="Ej: Retención > 85%" />
+        <label>Prioridad <span class="tooltip-icon" onclick="mostrarModalAyuda('Prioridad')">❓</span></label>
+        <select class="objetivo-prioridad">
+          <option value="">Selecciona</option>
+          <option value="Alta" ${obj.prioridad === "Alta" ? "selected" : ""}>Alta</option>
+          <option value="Media" ${obj.prioridad === "Media" ? "selected" : ""}>Media</option>
+          <option value="Baja" ${obj.prioridad === "Baja" ? "selected" : ""}>Baja</option>
+        </select>
+        <label>Responsable <span class="tooltip-icon" onclick="mostrarModalAyuda('Responsable')">❓</span></label>
+        <input class="objetivo-responsable" value="${obj.responsable || ''}" placeholder="Ej: Juan Pérez" />
+        <label>Estado <span class="tooltip-icon" onclick="mostrarModalAyuda('Estado')">❓</span></label>
+        <select class="objetivo-estado">
+          <option value="">Selecciona</option>
+          <option value="En análisis" ${obj.estado === "En análisis" ? "selected" : ""}>En análisis</option>
+          <option value="En desarrollo" ${obj.estado === "En desarrollo" ? "selected" : ""}>En desarrollo</option>
+          <option value="Listo para QA" ${obj.estado === "Listo para QA" ? "selected" : ""}>Listo para QA</option>
+          <option value="Terminado" ${obj.estado === "Terminado" ? "selected" : ""}>Terminado</option>
+        </select>
+        <label>Notas <span class="tooltip-icon" onclick="mostrarModalAyuda('Notas')">❓</span></label>
+        <textarea class="objetivo-notas" placeholder="Notas, supuestos, decisiones, etc.">${obj.notas || ''}</textarea>
+        <div id="funcionalidades-${idx}"></div>
+        <button onclick="agregarFuncionalidad(${idx})">➕ Añadir Característica</button>
+      </div>
+    `;
+    document.getElementById("objetivos").appendChild(div);
+    // Render funcionalidades SIN hacer push
+    if (obj.funcionalidades && obj.funcionalidades.length) {
+      obj.funcionalidades.forEach((func, fidx) => renderFuncionalidad(idx, func, fidx));
+    }
+  });
+}
+
+function agregarObjetivo(obj = null) {
+  if (!obj) {
+    objetivos.push({
+      id: "",
+      descripcion: "",
+      kpi: "",
+      prioridad: "",
+      responsable: "",
+      estado: "",
+      notas: "",
+      funcionalidades: []
+    });
+  } else {
+    objetivos.push(obj);
+  }
+  renderObjetivos();
+}
+
+function borrarObjetivo(idx) {
+  if (!confirm("¿Seguro que deseas borrar este objetivo de negocio y todo su contenido?")) return;
+  objetivos.splice(idx, 1);
+  renderObjetivos();
+}
+
+function cargarTrabajo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = JSON.parse(e.target.result);
+    vision = data.vision || '';
+    document.getElementById("visionGeneral").value = vision;
+    // REEMPLAZA el array, no lo sumes
+    objetivos = Array.isArray(data.objetivos_de_negocio) ? data.objetivos_de_negocio : [];
+    renderObjetivos();
+  };
+  reader.readAsText(file);
+}
+
+function actualizarDatosDesdeDOM() {
+  vision = document.getElementById("visionGeneral").value.trim();
+  const objetivoDivs = document.querySelectorAll('[id^="objetivo-"]');
+  objetivos = [];
+  objetivoDivs.forEach((objDiv, oidx) => {
+    const obj = {
+      id: objDiv.querySelector('.objetivo-id').value.trim(),
+      descripcion: objDiv.querySelector('.objetivo-desc').value.trim(),
+      kpi: objDiv.querySelector('.objetivo-kpi')?.value.trim() || "",
+      prioridad: objDiv.querySelector('.objetivo-prioridad')?.value.trim() || "",
+      responsable: objDiv.querySelector('.objetivo-responsable')?.value.trim() || "",
+      estado: objDiv.querySelector('.objetivo-estado')?.value.trim() || "",
+      notas: objDiv.querySelector('.objetivo-notas')?.value.trim() || "",
+      funcionalidades: []
+    };
+    const funcDivs = objDiv.querySelectorAll('[id^="func-"]');
+    funcDivs.forEach((funcDiv, fidx) => {
+      const func = {
+        id: funcDiv.querySelector('.func-id').value.trim(),
+        nombre: funcDiv.querySelector('.nombre').value.trim(),
+        actor: funcDiv.querySelector('.actor').value.trim(),
+        impacto: funcDiv.querySelector('.impacto').value.trim(),
+        tags: funcDiv.querySelector('.func-tags')?.value.trim() || "",
+        estado: funcDiv.querySelector('.func-estado')?.value.trim() || "",
+        responsable: funcDiv.querySelector('.func-responsable')?.value.trim() || "",
+        notas: funcDiv.querySelector('.func-notas')?.value.trim() || "",
+        enlace_doc: funcDiv.querySelector('.func-enlace-doc')?.value.trim() || "",
+        background: funcDiv.querySelector('.background').value.trim(),
+        historias: []
+      };
+      const historiaDivs = funcDiv.querySelectorAll('.historias > .section');
+      historiaDivs.forEach((histDiv, hIdx) => {
+        const historia = {
+          id: histDiv.querySelector('.historia-id').value.trim(),
+          descripcion: histDiv.querySelector('.historia-desc').value.trim(),
+          dependencias: histDiv.querySelector('.historia-dependencias')?.value.trim() || "",
+          estado: histDiv.querySelector('.historia-estado')?.value.trim() || "",
+          responsable: histDiv.querySelector('.historia-responsable')?.value.trim() || "",
+          notas: histDiv.querySelector('.historia-notas')?.value.trim() || "",
+          criterios: []
+        };
+        const criterioDivs = histDiv.querySelectorAll('.criterios > .section');
+        criterioDivs.forEach(critDiv => {
+          const crit = {
+            comentario: critDiv.querySelector('.criterio-comentario').value.trim(),
+            tags: critDiv.querySelector('.criterio-tags').value.trim(),
+            titulo: critDiv.querySelector('.criterio-titulo').value.trim(),
+            estado: critDiv.querySelector('.criterio-estado')?.value.trim() || "",
+            notas: critDiv.querySelector('.criterio-notas')?.value.trim() || "",
+            given: critDiv.querySelector('.criterio-given').value.trim(),
+            when: critDiv.querySelector('.criterio-when').value.trim(),
+            then: critDiv.querySelector('.criterio-then').value.trim(),
+            clases_unitarias: {
+              contexto: critDiv.querySelector('.clase-contexto')?.value.trim() || "",
+              especificacion: Array.from(critDiv.querySelectorAll('.clases-especificacion input')).map(inp => inp.value.trim()).filter(Boolean)
+            }
+          };
+          historia.criterios.push(crit);
+        });
+        func.historias.push(historia);
+      });
+      obj.funcionalidades.push(func);
+    });
+    objetivos.push(obj);
+  });
+}
+
+function toggleSection(btn, bodyId) {
+  const body = document.getElementById(bodyId);
+  if (body.style.display === "none") {
+    body.style.display = "";
+    btn.textContent = "▼";
+    btn.setAttribute("aria-expanded", "true");
+  } else {
+    body.style.display = "none";
+    btn.textContent = "►";
+    btn.setAttribute("aria-expanded", "false");
+  }
+}
+
+function renderFuncionalidad(objetivoIdx, func, id) {
+  const div = document.createElement("div");
+  div.className = "section";
+  div.id = `func-${objetivoIdx}-${id}`;
+  div.innerHTML = `
+    <div class="func-header">
+      <h3>
+        💡 Característica/Funcionalidad ${id + 1}
+        <span class="tooltip-icon" onclick="mostrarModalAyuda('Característica')">❓</span>
+      </h3>
+      <div>
+        <button class="expand-btn" aria-expanded="true" onclick="toggleSection(this, 'func-body-${objetivoIdx}-${id}')">▼</button>
+        <button class="borrar-btn" onclick="borrarFuncionalidad(${objetivoIdx}, ${id})">🗑️ Borrar</button>
+      </div>
+    </div>
+    <div class="func-body" id="func-body-${objetivoIdx}-${id}">
+      <label>ID Funcionalidad <span class="tooltip-icon" onclick="mostrarModalAyuda('ID Funcionalidad')">❓</span></label>
+      <input class="func-id" value="${func.id}" />
+      <label>Nombre <span class="tooltip-icon" onclick="mostrarModalAyuda('Nombre de la Funcionalidad')">❓</span></label>
+      <input class="nombre" value="${func.nombre}" />
+      <label>Actor <span class="tooltip-icon" onclick="mostrarModalAyuda('Actor')">❓</span></label>
+      <input class="actor" value="${func.actor}" />
+      <label>Impacto <span class="tooltip-icon" onclick="mostrarModalAyuda('Impacto')">❓</span></label>
+      <input class="impacto" value="${func.impacto}" />
+      <label>Tags <span class="tooltip-icon" onclick="mostrarModalAyuda('Tags')">❓</span></label>
+      <input class="func-tags" value="${func.tags}" placeholder="Ej: progreso, dashboard" />
+      <label>Estado <span class="tooltip-icon" onclick="mostrarModalAyuda('Estado')">❓</span></label>
+      <select class="func-estado">
+        <option value="">Selecciona</option>
+        <option value="En análisis" ${func.estado === "En análisis" ? "selected" : ""}>En análisis</option>
+        <option value="En desarrollo" ${func.estado === "En desarrollo" ? "selected" : ""}>En desarrollo</option>
+        <option value="Listo para QA" ${func.estado === "Listo para QA" ? "selected" : ""}>Listo para QA</option>
+        <option value="Terminado" ${func.estado === "Terminado" ? "selected" : ""}>Terminado</option>
+      </select>
+      <label>Responsable <span class="tooltip-icon" onclick="mostrarModalAyuda('Responsable')">❓</span></label>
+      <input class="func-responsable" value="${func.responsable}" placeholder="Ej: Ana López" />
+      <label>Notas <span class="tooltip-icon" onclick="mostrarModalAyuda('Notas')">❓</span></label>
+      <textarea class="func-notas" placeholder="Notas, supuestos, decisiones, etc.">${func.notas}</textarea>
+      <label>Enlace a documentación <span class="tooltip-icon" onclick="mostrarModalAyuda('Enlace a documentación')">❓</span></label>
+      <input class="func-enlace-doc" type="url" value="${func.enlace_doc}" placeholder="https://..." />
+      <label>Antecedentes <span class="tooltip-icon" onclick="mostrarModalAyuda('Antecedentes')">❓</span></label>
+      <textarea class="background">${func.background}</textarea>
+      <div class="historias" id="historias-${objetivoIdx}-${id}"></div>
+      <button onclick="agregarHistoria(${objetivoIdx}, ${id})">➕ Añadir Historia de Usuario</button>
+    </div>
+  `;
+  document.getElementById(`funcionalidades-${objetivoIdx}`).appendChild(div);
+  if (func.historias && func.historias.length) {
+    func.historias.forEach((hist, hidx) => agregarHistoria(objetivoIdx, id, hist));
+  }
+}
+
+function agregarFuncionalidad(objetivoIdx, func = null) {
+  let id;
+  let data;
+  if (!func) {
+    data = {
+      id: '',
+      nombre: '',
+      actor: '',
+      impacto: '',
+      tags: '',
+      estado: '',
+      responsable: '',
+      notas: '',
+      enlace_doc: '',
+      background: '',
+      historias: []
+    };
+    id = objetivos[objetivoIdx].funcionalidades.length;
+    objetivos[objetivoIdx].funcionalidades.push(data);
+  } else {
+    data = func;
+    id = objetivos[objetivoIdx].funcionalidades.indexOf(func);
+    if (id === -1) id = objetivos[objetivoIdx].funcionalidades.length;
+  }
+  renderFuncionalidad(objetivoIdx, data, id);
+}
+
+function borrarFuncionalidad(objetivoIdx, funcId) {
+  if (!confirm("¿Seguro que deseas borrar esta funcionalidad y todo su contenido?")) return;
+  objetivos[objetivoIdx].funcionalidades.splice(funcId, 1);
+  renderObjetivos();
+}
+
+function agregarHistoria(objetivoIdx, funcId, historia = null) {
+  const contenedor = document.getElementById(`historias-${objetivoIdx}-${funcId}`);
+  const idx = objetivos[objetivoIdx].funcionalidades[funcId].historias.length;
+
+  const data = {
+    id: historia?.id || '',
+    descripcion: historia?.descripcion || '',
+    dependencias: historia?.dependencias || '',
+    estado: historia?.estado || '',
+    responsable: historia?.responsable || '',
+    notas: historia?.notas || '',
+    criterios: historia?.criterios || []
+  };
+  objetivos[objetivoIdx].funcionalidades[funcId].historias.push(data);
+
+  const div = document.createElement("div");
+  div.className = "section";
+  div.style.borderColor = "#17a2b8";
+  div.innerHTML = `
+    <div class="hist-header">
+      <h4>
+        📘 Historia de Usuario ${idx + 1}
+        <span class="tooltip-icon" onclick="mostrarModalAyuda('Descripción Historia de Usuario')">❓</span>
+      </h4>
+      <div>
+        <button class="expand-btn" aria-expanded="true" onclick="toggleSection(this, 'hist-body-${objetivoIdx}-${funcId}-${idx}')">▼</button>
+        <button class="borrar-btn" onclick="borrarHistoria(${objetivoIdx}, ${funcId}, ${idx})">🗑️ Borrar</button>
+      </div>
+    </div>
+    <div class="hist-body" id="hist-body-${objetivoIdx}-${funcId}-${idx}">
+      <label>ID Historia <span class="tooltip-icon" onclick="mostrarModalAyuda('ID Historia')">❓</span></label>
+      <input class="historia-id" value="${data.id}" />
+      <label>Descripción <span class="tooltip-icon" onclick="mostrarModalAyuda('Descripción Historia de Usuario')">❓</span></label>
+      <textarea class="historia-desc">${data.descripcion}</textarea>
+      <label>Dependencias <span class="tooltip-icon" onclick="mostrarModalAyuda('Dependencias')">❓</span></label>
+      <input class="historia-dependencias" value="${data.dependencias}" placeholder="Ej: HIST-1-1-0" />
+      <label>Estado <span class="tooltip-icon" onclick="mostrarModalAyuda('Estado')">❓</span></label>
+      <select class="historia-estado">
+        <option value="">Selecciona</option>
+        <option value="En análisis" ${data.estado === "En análisis" ? "selected" : ""}>En análisis</option>
+        <option value="En desarrollo" ${data.estado === "En desarrollo" ? "selected" : ""}>En desarrollo</option>
+        <option value="Listo para QA" ${data.estado === "Listo para QA" ? "selected" : ""}>Listo para QA</option>
+        <option value="Terminado" ${data.estado === "Terminado" ? "selected" : ""}>Terminado</option>
+      </select>
+      <label>Responsable <span class="tooltip-icon" onclick="mostrarModalAyuda('Responsable')">❓</span></label>
+      <input class="historia-responsable" value="${data.responsable}" placeholder="Ej: Carlos Ruiz" />
+      <label>Notas <span class="tooltip-icon" onclick="mostrarModalAyuda('Notas')">❓</span></label>
+      <textarea class="historia-notas" placeholder="Notas, supuestos, decisiones, etc.">${data.notas}</textarea>
+      <div class="criterios" id="criterios-${objetivoIdx}-${funcId}-${idx}"></div>
+      <button onclick="agregarCriterio(${objetivoIdx}, ${funcId}, ${idx})">➕ Añadir Criterio de Aceptación</button>
+    </div>
+  `;
+  contenedor.appendChild(div);
+  if (historia && historia.criterios) {
+    historia.criterios.forEach((crit, cidx) => agregarCriterio(objetivoIdx, funcId, idx, crit));
+  }
+}
+
+function borrarHistoria(objetivoIdx, funcId, histId) {
+  if (!confirm("¿Seguro que deseas borrar esta historia y todo su contenido?")) return;
+  objetivos[objetivoIdx].funcionalidades[funcId].historias.splice(histId, 1);
+  renderObjetivos();
+}
+
+function agregarCriterio(objetivoIdx, funcId, histId, criterio = null) {
+  const contenedor = document.getElementById(`criterios-${objetivoIdx}-${funcId}-${histId}`);
+  const data = {
+    comentario: criterio?.comentario || '',
+    tags: criterio?.tags || '',
+    titulo: criterio?.titulo || '',
+    estado: criterio?.estado || '',
+    notas: criterio?.notas || '',
+    given: criterio?.given || '',
+    when: criterio?.when || '',
+    then: criterio?.then || '',
+    clases_unitarias: criterio?.clases_unitarias || { contexto: "", especificacion: [] }
+  };
+  objetivos[objetivoIdx].funcionalidades[funcId].historias[histId].criterios.push(data);
+
+  const div = document.createElement("div");
+  div.className = "section";
+  div.style.borderColor = "#6f42c1";
+  div.innerHTML = `
+    <div class="crit-header">
+      <h5>
+        📝 Criterio de Aceptación
+        <span class="tooltip-icon" onclick="mostrarModalAyuda('Comentario Criterio de Aceptación')">❓</span>
+      </h5>
+      <div>
+        <button class="expand-btn" aria-expanded="true" onclick="toggleSection(this, 'crit-body-${objetivoIdx}-${funcId}-${histId}-${contenedor.children.length}')">▼</button>
+        <button class="borrar-btn" onclick="borrarCriterio(${objetivoIdx}, ${funcId}, ${histId}, this)">🗑️ Borrar</button>
+      </div>
+    </div>
+    <div class="crit-body" id="crit-body-${objetivoIdx}-${funcId}-${histId}-${contenedor.children.length}">
+      <label>Comentario <span class="tooltip-icon" onclick="mostrarModalAyuda('Comentario Criterio de Aceptación')">❓</span></label>
+      <input class="criterio-comentario" value="${data.comentario}" />
+      <label>Tags <span class="tooltip-icon" onclick="mostrarModalAyuda('Tags Escenario')">❓</span></label>
+      <input class="criterio-tags" value="${data.tags}" />
+      <label>Título Escenario <span class="tooltip-icon" onclick="mostrarModalAyuda('Título Escenario')">❓</span></label>
+      <input class="criterio-titulo" value="${data.titulo}" />
+      <label>Estado <span class="tooltip-icon" onclick="mostrarModalAyuda('Estado')">❓</span></label>
+      <select class="criterio-estado">
+        <option value="">Selecciona</option>
+        <option value="En análisis" ${data.estado === "En análisis" ? "selected" : ""}>En análisis</option>
+        <option value="En desarrollo" ${data.estado === "En desarrollo" ? "selected" : ""}>En desarrollo</option>
+        <option value="Listo para QA" ${data.estado === "Listo para QA" ? "selected" : ""}>Listo para QA</option>
+        <option value="Aprobado" ${data.estado === "Aprobado" ? "selected" : ""}>Aprobado</option>
+        <option value="Terminado" ${data.estado === "Terminado" ? "selected" : ""}>Terminado</option>
+      </select>
+      <label>Notas <span class="tooltip-icon" onclick="mostrarModalAyuda('Notas')">❓</span></label>
+      <textarea class="criterio-notas" placeholder="Notas, supuestos, decisiones, etc.">${data.notas}</textarea>
+      <label>🟢 Given <span class="tooltip-icon" onclick="mostrarModalAyuda('Pasos del Escenario')">❓</span></label>
+      <textarea class="criterio-given">${data.given}</textarea>
+      <label>🟡 When <span class="tooltip-icon" onclick="mostrarModalAyuda('Pasos del Escenario')">❓</span></label>
+      <textarea class="criterio-when">${data.when}</textarea>
+      <label>🔵 Then <span class="tooltip-icon" onclick="mostrarModalAyuda('Pasos del Escenario')">❓</span></label>
+      <textarea class="criterio-then">${data.then}</textarea>
+      <div class="pruebas-unitarias-block">
+        <b>Pruebas Unitarias: <span class="tooltip-icon" onclick="mostrarModalAyuda('pruebas unitarias')">❓</span></b></b></b>
+        <div>
+          <b>Contexto (Clase Java) <span class="tooltip-icon" onclick="mostrarModalAyuda('Contexto (Clase Java)')">❓</span></b>
+          <input class="clase-contexto" value="${data.clases_unitarias.contexto || ''}" placeholder="Ej: CuandoElEstudianteHaFinalizadoElCurso.java" />
+        </div>
+        <div>
+          <b>Especificación (Métodos) <span class="tooltip-icon" onclick="mostrarModalAyuda('Especificación (Métodos)')">❓</span></b>
+          <ul class="clases-especificacion"></ul>
+          <button type="button" class="add" onclick="agregarClaseUnitariaEspecificacion(this)">+ Método de Especificación</button>
+        </div>
+      </div>
+    </div>
+  `;
+  contenedor.appendChild(div);
+
+  const ul = div.querySelector('.clases-especificacion');
+  (data.clases_unitarias.especificacion || []).forEach(metodo => {
+    const li = document.createElement('li');
+    li.innerHTML = `<input value="${metodo}" style="width:80%"/><button onclick="borrarClaseUnitaria(this)">🗑️</button>`;
+    ul.appendChild(li);
+  });
+}
+
+function agregarClaseUnitariaEspecificacion(btn) {
+  const ul = btn.parentNode.querySelector('.clases-especificacion');
+  const li = document.createElement('li');
+  li.innerHTML = `<input value="" style="width:80%"/><button onclick="borrarClaseUnitaria(this)">🗑️</button>`;
+  ul.appendChild(li);
+}
+
+function borrarCriterio(objetivoIdx, funcId, histId, btn) {
+  if (!confirm("¿Seguro que deseas borrar este criterio de aceptación?")) return;
+  const contenedor = btn.closest('.criterios');
+  const criterioDiv = btn.closest('.section');
+  const idx = Array.from(contenedor.children).indexOf(criterioDiv);
+  objetivos[objetivoIdx].funcionalidades[funcId].historias[histId].criterios.splice(idx, 1);
+  renderObjetivos();
+}
+
+function borrarClaseUnitaria(btn) {
+  if (!confirm("¿Seguro que deseas borrar esta especificación?")) return;
+  btn.parentNode.remove();
+}
+
+
+function cleanFileName(str) {
+  return (str || '')
+    .toString()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .replace(/_+/g, '_')
+    .toLowerCase();
+}
+
+function descargarFeatures() {
+  let totalDescargados = 0;
+  objetivos.forEach((objetivo, oidx) => {
+    if (!objetivo.funcionalidades) return;
+    objetivo.funcionalidades.forEach((func, fidx) => {
+      let content = `# Visión: ${vision}\n# Objetivo ID: ${objetivo.id}\n# Objetivo: ${objetivo.descripcion}\n\n`;
+      content += `Feature: ${func.nombre}\n`;
+      content += `  Como ${func.actor}\n`;
+      content += `  Quiero ${func.nombre.toLowerCase()}\n`;
+      content += `  Para ${func.impacto}\n`;
+
+      if (func.background && func.background.trim()) {
+        content += `\n  Background:\n`;
+        func.background.split('\n').forEach((line, idx) => {
+          const prefix = idx === 0 ? 'Given' : 'And';
+          content += `    ${prefix} ${line.trim()}\n`;
+        });
+      }
+
+      if (func.historias) {
+        func.historias.forEach(hist => {
+          content += `\n  # HISTORIA DE USUARIO: ${hist.id}\n`;
+          hist.descripcion.split('\n').forEach(line => {
+            content += `  # ${line.trim()}\n`;
+          });
+
+          if (hist.criterios) {
+            hist.criterios.forEach((crit, cidx) => {
+              content += `\n  # CRITERIO DE ACEPTACIÓN ${cidx + 1}: ${crit.comentario}\n`;
+              if (crit.tags) content += `  ${crit.tags}\n`;
+              content += `  Scenario: ${crit.titulo}\n`;
+              crit.given.split('\n').forEach((line, i) => {
+                if (line.trim()) content += `    ${i === 0 ? 'Given' : 'And'} ${line.trim().replace(/^(Given|And)\s+/i, '')}\n`;
+              });
+              crit.when.split('\n').forEach((line, i) => {
+                if (line.trim()) content += `    ${i === 0 ? 'When' : 'And'} ${line.trim().replace(/^(When|And)\s+/i, '')}\n`;
+              });
+              crit.then.split('\n').forEach((line, i) => {
+                if (line.trim()) content += `    ${i === 0 ? 'Then' : 'And'} ${line.trim().replace(/^(Then|And)\s+/i, '')}\n`;
+              });
+              if (crit.clases_unitarias) {
+                content += `    # pruebas unitarias:\n`;
+                if (crit.clases_unitarias.contexto) {
+                  content += `    #   Contexto:\n`;
+                  content += `    #     - ${crit.clases_unitarias.contexto}\n`;
+                }
+                if (crit.clases_unitarias.especificacion && crit.clases_unitarias.especificacion.length) {
+                  content += `    #   Especificación:\n`;
+                  crit.clases_unitarias.especificacion.forEach(metodo => {
+                    content += `    #     - ${metodo}\n`;
+                  });
+                }
+              }
+            });
+          }
+        });
+      }
+
+      const objId = cleanFileName(objetivo.id || `obj${oidx+1}`);
+      const funcId = cleanFileName(func.id || `func${fidx+1}`);
+      const funcName = cleanFileName(func.nombre || "");
+      const filename = `${objId}_${funcId}_${funcName}.feature`;
+
+      const blob = new Blob([content], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      totalDescargados++;
+    });
+  });
+  alert(`Se descargaron ${totalDescargados} archivos de características.`);
+}
+
+function verPrevisualizacion() {
+  actualizarDatosDesdeDOM();
+  const wrapper = document.getElementById("previsualizacion");
+  const content = document.getElementById("previewContent");
+  content.innerHTML = '';
+  objetivos.forEach((objetivo, oidx) => {
+    objetivo.funcionalidades.forEach((func, i) => {
+      let text = `# Visión: ${vision}\n# Objetivo ID: ${objetivo.id}\n# Objetivo: ${objetivo.descripcion}\n\n`;
+      text += `Feature: ${func.nombre}\n`;
+      text += `  Como ${func.actor}\n`;
+      text += `  Quiero ${func.nombre.toLowerCase()}\n`;
+      text += `  Para ${func.impacto}\n`;
+
+      if (func.background.trim()) {
+        text += `\n  Background:\n`;
+        func.background.split('\n').forEach((line, idx) => {
+          const prefix = idx === 0 ? 'Given' : 'And';
+          text += `    ${prefix} ${line.trim()}\n`;
+        });
+      }
+
+      func.historias.forEach(hist => {
+        text += `\n  # HISTORIA DE USUARIO: ${hist.id}\n`;
+        hist.descripcion.split('\n').forEach(line => {
+          text += `  # ${line.trim()}\n`;
+        });
+        hist.criterios.forEach((crit, idx) => {
+          text += `\n  # CRITERIO DE ACEPTACIÓN ${idx + 1}: ${crit.comentario}\n`;
+          if (crit.tags) text += `  ${crit.tags}\n`;
+          text += `  Scenario: ${crit.titulo}\n`;
+          crit.given.split('\n').forEach((line, i) => {
+            if (line.trim()) text += `    ${i === 0 ? 'Given' : 'And'} ${line.trim().replace(/^(Given|And)\s+/i, '')}\n`;
+          });
+          crit.when.split('\n').forEach((line, i) => {
+            if (line.trim()) text += `    ${i === 0 ? 'When' : 'And'} ${line.trim().replace(/^(When|And)\s+/i, '')}\n`;
+          });
+          crit.then.split('\n').forEach((line, i) => {
+            if (line.trim()) text += `    ${i === 0 ? 'Then' : 'And'} ${line.trim().replace(/^(Then|And)\s+/i, '')}\n`;
+          });
+          if (crit.clases_unitarias) {
+            text += `    # pruebas unitarias:\n`;
+            if (crit.clases_unitarias.contexto) {
+              text += `    #   Contexto:\n`;
+              text += `    #     - ${crit.clases_unitarias.contexto}\n`;
+            }
+            if (crit.clases_unitarias.especificacion && crit.clases_unitarias.especificacion.length) {
+              text += `    #   Especificación:\n`;
+              crit.clases_unitarias.especificacion.forEach(metodo => {
+                text += `    #     - ${metodo}\n`;
+              });
+            }
+          }
+        });
+      });
+
+      const pre = document.createElement("pre");
+      pre.textContent = text;
+      content.appendChild(pre);
+      content.appendChild(document.createElement("hr"));
+    });
+  });
+  wrapper.style.display = "block";
+}
+
+function guardarTrabajo() {
+  actualizarDatosDesdeDOM();
+  const data = {
+    vision,
+    objetivos_de_negocio: objetivos
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = "mi_trabajo_guardado.json";
+  link.click();
+}
+
+
+function mostrarModalAyuda(titulo) {
+  const mensaje = ayudas[titulo] || 'No se ha definido ayuda para esta sección.';
+  document.getElementById('modalTitulo').textContent = `🛈 ${titulo}`;
+  document.getElementById('modalContenido').textContent = mensaje;
+  document.getElementById('modalAyuda').style.display = 'block';
+}
+function cerrarModalAyuda() {
+  document.getElementById('modalAyuda').style.display = 'none';
+}
+window.onclick = function(event) {
+  const modal = document.getElementById('modalAyuda');
+  if (event.target === modal) {
+    modal.style.display = 'none';
+  }
+}
+
+const ayudas = {
+  "Visión": `
+Responde a la pregunta: ¿Por qué construimos esto?
+Describe la visión global del sistema o producto.
+
+Ejemplo:
+Ser líderes en gestión de talento digital en Latinoamérica.
+  `.trim(),
+
+  "Objetivo de negocio": `
+Responde a la pregunta: ¿Qué resultado medible queremos lograr?
+Ingresa el objetivo estratégico principal del sistema.
+Este debe representar una meta de alto nivel que justifique el conjunto de funcionalidades.
+
+Ejemplos:
+- Optimizar la administración del personal.
+- Reducir errores en procesos de nómina.
+- Aumentar la eficiencia operativa del área de Recursos Humanos.
+  `.trim(),
+
+  "ID Objetivo": `
+Responde a la pregunta: ¿Cómo identificamos este objetivo?
+Identificador único del objetivo de negocio.
+Ejemplo: OBJ-1
+  `.trim(),
+
+  "Descripción Objetivo": `
+Responde a la pregunta: ¿Qué significa este objetivo?
+Descripción clara y concisa del objetivo de negocio.
+  `.trim(),
+
+  "KPI": `
+Responde a la pregunta: ¿Cómo sabremos si logramos el objetivo?
+Métrica clave para medir el éxito del objetivo.
+Ejemplo: Retención > 85%
+  `.trim(),
+
+  "Prioridad": `
+Responde a la pregunta: ¿Qué tan importante es esto?
+Nivel de importancia del objetivo, funcionalidad, historia o criterio.
+Ejemplo: Alta, Media, Baja
+  `.trim(),
+
+  "Responsable": `
+Responde a la pregunta: ¿Quién se encarga de esto?
+Persona encargada de este objetivo, funcionalidad, historia o criterio.
+Ejemplo: Juan Pérez
+  `.trim(),
+
+  "Estado": `
+Responde a la pregunta: ¿En qué fase está esto?
+Fase actual del elemento.
+Ejemplo: En análisis, En desarrollo, Listo para QA, Terminado, Aprobado
+  `.trim(),
+
+  "Notas": `
+Responde a la pregunta: ¿Qué información adicional o aclaraciones hay?
+Notas, supuestos, decisiones, aclaraciones o información relevante.
+  `.trim(),
+
+  "Característica": `
+Responde a la pregunta: ¿Qué capacidad funcional nos ayuda a alcanzar el objetivo?
+Describe una capacidad funcional del sistema.
+Ejemplo: Gestión de usuarios, Reportes de desempeño, Seguimiento de progreso.
+  `.trim(),
+
+  "ID Funcionalidad": `
+Responde a la pregunta: ¿Cómo identificamos esta funcionalidad?
+Identificador único de la funcionalidad.
+Ejemplo: FUNC-1-1
+  `.trim(),
+
+  "Nombre de la Funcionalidad": `
+Responde a la pregunta: ¿Qué hace esta funcionalidad?
+Describe de forma clara y corta cuál es la funcionalidad que estás documentando. 
+Debe reflejar una acción o unidad de valor funcional para el usuario o sistema.
+
+Ejemplo:
+- Crear usuario
+- Editar información del colaborador
+- Activar módulo de permisos
+  `.trim(),
+
+  "Actor": `
+Responde a la pregunta: ¿Quién usa esta funcionalidad?
+Indica el rol o tipo de usuario que ejecuta la funcionalidad.
+
+Ejemplos:
+- Administrador del sistema
+- Empleado
+- Gerente de área
+  `.trim(),
+
+  "Impacto": `
+Responde a la pregunta: ¿Qué beneficio o cambio genera esta funcionalidad?
+Describe el resultado que se espera tras ejecutar esta funcionalidad. 
+Debe aludir a un beneficio o cambio tangible medible en el sistema o negocio.
+
+Ejemplo:
+- Controlar el acceso y mantener la seguridad
+- Habilitar la autogestión de datos personales
+- Disminuir errores humanos
+  `.trim(),
+
+  "Tags": `
+Responde a la pregunta: ¿Cómo podemos clasificar o buscar esto?
+Palabras clave para clasificar y buscar funcionalidades o escenarios.
+Ejemplo: progreso, dashboard, pagos
+  `.trim(),
+
+  "Enlace a documentación": `
+Responde a la pregunta: ¿Dónde encuentro más información o recursos?
+URL a documentación, mockups o recursos relacionados.
+Ejemplo: https://miempresa.com/docs/seguimiento-progreso
+  `.trim(),
+
+  "Antecedentes": `
+Responde a la pregunta: ¿Qué condiciones deben cumplirse antes de ejecutar el escenario?
+Lista de condiciones necesarias que deben cumplirse antes de ejecutar los escenarios.
+Debe escribirse en formato Gherkin (Given/And).
+
+Ejemplo:
+- Dado que estoy autenticado en el sistema
+- Y tengo el rol de administrador
+- Y estoy visualizando el módulo de usuarios
+  `.trim(),
+
+  "ID Historia": `
+Responde a la pregunta: ¿Cómo identificamos esta historia de usuario?
+Identificador único de la historia de usuario.
+Ejemplo: HIST-1-1-1
+  `.trim(),
+
+  "Descripción Historia de Usuario": `
+Responde a la pregunta: ¿Qué necesidad del usuario estamos resolviendo?
+Redacta la historia de usuario en tres frases separadas por líneas:
+
+1. Como [rol]...
+2. Quiero [acción objetivo funcional]...
+3. Para [resultado/beneficio].
+
+Ejemplo:
+Como administrador,
+Quiero crear cuentas de usuario,
+Para que los empleados puedan acceder al sistema.
+  `.trim(),
+
+  "Dependencias": `
+Responde a la pregunta: ¿De qué depende esta historia?
+IDs de historias o funcionalidades de las que depende esta historia.
+Ejemplo: HIST-1-1-0
+  `.trim(),
+
+  "Comentario Criterio de Aceptación": `
+Responde a la pregunta: ¿Qué se validará con este escenario?
+Texto libre que justifica lo que se validará con el escenario descrito.
+Debe estar redactado claramente para describir qué se espera que pase.
+
+Ejemplo:
+Se debe prevenir duplicados de correo electrónico.
+  `.trim(),
+
+  "Tags Escenario": `
+Responde a la pregunta: ¿Cómo clasificamos este escenario?
+Lista de etiquetas para clasificar el escenario con propósitos de filtrado o automatización.
+
+Ejemplo:
+@crear @usuarios @regresion
+  `.trim(),
+
+  "Título Escenario": `
+Responde a la pregunta: ¿Cómo se llama este flujo principal?
+Nombre corto y claro que describe el flujo principal del escenario.
+
+Ejemplo:
+Crear un usuario exitosamente
+  `.trim(),
+
+  "Pasos del Escenario": `
+Responde a la pregunta: ¿Cuál es el comportamiento específico?
+Los pasos deben seguir el formato Gherkin:
+
+- Given (precondiciones)
+- When (evento/s)
+- Then (resultado esperado)
+
+Ejemplo:
+Given que hago clic en "Nuevo usuario"
+When completo el formulario
+Then debería ver el mensaje "Usuario creado exitosamente"
+  `.trim(),
+
+"pruebas unitarias": `
+Responde a la pregunta: ¿Qué código técnico verifica que ese comportamiento funciona?
+Relaciona el criterio de aceptación con las pruebas unitarias que lo validan.
+Incluye el contexto (clase de prueba) y las especificaciones (métodos de prueba).
+  `.trim(),
+
+  "Contexto (Clase Java)": `
+Responde a la pregunta: ¿En qué situación o estado inicial se encuentra el sistema para esta prueba?
+Es el nombre de la clase de prueba unitaria que representa el contexto del escenario.
+Ejemplo: CuandoElEstudianteHaFinalizadoElCurso.java
+  `.trim(),
+
+  "Especificación (Métodos)": `
+Responde a la pregunta: ¿Qué comportamientos o resultados se esperan en este contexto?
+Lista de métodos de prueba que validan los comportamientos esperados en la clase de contexto.
+Ejemplo: debeGenerarCertificadoPdf, debePermitirDescargarCertificado
+  `.trim()
+};
+
+renderObjetivos();
+</script>
+</body>
+</html>
