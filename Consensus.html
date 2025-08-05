@@ -231,6 +231,7 @@
       border-radius: 4px;
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -246,10 +247,14 @@
     <input id="visionGeneral" placeholder="Ej: Ser líderes en gestión de talento digital" />
 
     <div id="objetivos"></div>
-    <button onclick="agregarObjetivo()">➕ Añadir Objetivo de Negocio</button>
-    <button onclick="descargarFeatures()">⬇️ Descargar Features</button>
-    <button onclick="verPrevisualizacion()">👁️ Ver Previsualización</button>
-    <button onclick="guardarTrabajo()">💾 Guardar Trabajo</button>
+    
+      <button onclick="agregarObjetivo()">➕ Añadir Objetivo de Negocio</button>
+      <button onclick="descargarFeatures()">⬇️ Descargar Features</button>
+      <button onclick="verPrevisualizacion()">👁️ Ver Previsualización</button>
+      <button onclick="guardarTrabajo()">💾 Guardar Trabajo</button>
+      </br></br>
+      <div style="text-align: center"><button onclick="descargarPruebasUnitariasZip()" >⬇️ Descargar Especificación Técnica</button>    </div> 
+ 
     <input type="file" onchange="cargarTrabajo(this)" />
 
     <div class="output" id="previsualizacion" style="display: none;">
@@ -386,6 +391,7 @@ function actualizarDatosDesdeDOM() {
       const func = {
         id: funcDiv.querySelector('.func-id').value.trim(),
         nombre: funcDiv.querySelector('.nombre').value.trim(),
+        namespace: funcDiv.querySelector('.func-namespace')?.value.trim() || "",
         actor: funcDiv.querySelector('.actor').value.trim(),
         impacto: funcDiv.querySelector('.impacto').value.trim(),
         tags: funcDiv.querySelector('.func-tags')?.value.trim() || "",
@@ -401,6 +407,7 @@ function actualizarDatosDesdeDOM() {
         const historia = {
           id: histDiv.querySelector('.historia-id').value.trim(),
           descripcion: histDiv.querySelector('.historia-desc').value.trim(),
+          package: histDiv.querySelector('.historia-package')?.value.trim() || "",
           dependencias: histDiv.querySelector('.historia-dependencias')?.value.trim() || "",
           estado: histDiv.querySelector('.historia-estado')?.value.trim() || "",
           responsable: histDiv.querySelector('.historia-responsable')?.value.trim() || "",
@@ -466,6 +473,8 @@ function renderFuncionalidad(objetivoIdx, func, id) {
       <input class="func-id" value="${func.id}" />
       <label>Nombre <span class="tooltip-icon" onclick="mostrarModalAyuda('Nombre de la Funcionalidad')">❓</span></label>
       <input class="nombre" value="${func.nombre}" />
+      <label>Nombre namespace/base package <span class="tooltip-icon" onclick="mostrarModalAyuda('Namespace/Base Package')">❓</span></label>
+      <input class="func-namespace" value="${func.namespace || ''}" placeholder="codebase. Ej: com.empresa.caracteristica | com.empresa.modulo.caracteristica" />
       <label>Actor <span class="tooltip-icon" onclick="mostrarModalAyuda('Actor')">❓</span></label>
       <input class="actor" value="${func.actor}" />
       <label>Impacto <span class="tooltip-icon" onclick="mostrarModalAyuda('Impacto')">❓</span></label>
@@ -494,7 +503,7 @@ function renderFuncionalidad(objetivoIdx, func, id) {
   `;
   document.getElementById(`funcionalidades-${objetivoIdx}`).appendChild(div);
   if (func.historias && func.historias.length) {
-    func.historias.forEach((hist, hidx) => agregarHistoria(objetivoIdx, id, hist));
+    func.historias.forEach((hist, hidx) => renderHistoria(objetivoIdx, id, hist, hidx));
   }
 }
 
@@ -531,21 +540,8 @@ function borrarFuncionalidad(objetivoIdx, funcId) {
   renderObjetivos();
 }
 
-function agregarHistoria(objetivoIdx, funcId, historia = null) {
+function renderHistoria(objetivoIdx, funcId, historia, idx) {
   const contenedor = document.getElementById(`historias-${objetivoIdx}-${funcId}`);
-  const idx = objetivos[objetivoIdx].funcionalidades[funcId].historias.length;
-
-  const data = {
-    id: historia?.id || '',
-    descripcion: historia?.descripcion || '',
-    dependencias: historia?.dependencias || '',
-    estado: historia?.estado || '',
-    responsable: historia?.responsable || '',
-    notas: historia?.notas || '',
-    criterios: historia?.criterios || []
-  };
-  objetivos[objetivoIdx].funcionalidades[funcId].historias.push(data);
-
   const div = document.createElement("div");
   div.className = "section";
   div.style.borderColor = "#17a2b8";
@@ -562,32 +558,56 @@ function agregarHistoria(objetivoIdx, funcId, historia = null) {
     </div>
     <div class="hist-body" id="hist-body-${objetivoIdx}-${funcId}-${idx}">
       <label>ID Historia <span class="tooltip-icon" onclick="mostrarModalAyuda('ID Historia')">❓</span></label>
-      <input class="historia-id" value="${data.id}" />
+      <input class="historia-id" value="${historia.id}" />
       <label>Descripción <span class="tooltip-icon" onclick="mostrarModalAyuda('Descripción Historia de Usuario')">❓</span></label>
-      <textarea class="historia-desc">${data.descripcion}</textarea>
+      <textarea class="historia-desc">${historia.descripcion}</textarea>
+      <label>Nombre package/vertical slice <span class="tooltip-icon" onclick="mostrarModalAyuda('Package/Vertical Slice')">❓</span></label>
+      <input class="historia-package" value="${historia.package || ''}" placeholder="Ej: , internal.query.consultarusuario, internal.command.registrarusuario, internal.command.actualizarusuario, internal.command.eliminarusuario" />
       <label>Dependencias <span class="tooltip-icon" onclick="mostrarModalAyuda('Dependencias')">❓</span></label>
-      <input class="historia-dependencias" value="${data.dependencias}" placeholder="Ej: HIST-1-1-0" />
+      <input class="historia-dependencias" value="${historia.dependencias}" placeholder="Ej: HIST-1-1-0" />
       <label>Estado <span class="tooltip-icon" onclick="mostrarModalAyuda('Estado')">❓</span></label>
       <select class="historia-estado">
         <option value="">Selecciona</option>
-        <option value="En análisis" ${data.estado === "En análisis" ? "selected" : ""}>En análisis</option>
-        <option value="En desarrollo" ${data.estado === "En desarrollo" ? "selected" : ""}>En desarrollo</option>
-        <option value="Listo para QA" ${data.estado === "Listo para QA" ? "selected" : ""}>Listo para QA</option>
-        <option value="Terminado" ${data.estado === "Terminado" ? "selected" : ""}>Terminado</option>
+        <option value="En análisis" ${historia.estado === "En análisis" ? "selected" : ""}>En análisis</option>
+        <option value="En desarrollo" ${historia.estado === "En desarrollo" ? "selected" : ""}>En desarrollo</option>
+        <option value="Listo para QA" ${historia.estado === "Listo para QA" ? "selected" : ""}>Listo para QA</option>
+        <option value="Terminado" ${historia.estado === "Terminado" ? "selected" : ""}>Terminado</option>
       </select>
       <label>Responsable <span class="tooltip-icon" onclick="mostrarModalAyuda('Responsable')">❓</span></label>
-      <input class="historia-responsable" value="${data.responsable}" placeholder="Ej: Carlos Ruiz" />
+      <input class="historia-responsable" value="${historia.responsable}" placeholder="Ej: Carlos Ruiz" />
       <label>Notas <span class="tooltip-icon" onclick="mostrarModalAyuda('Notas')">❓</span></label>
-      <textarea class="historia-notas" placeholder="Notas, supuestos, decisiones, etc.">${data.notas}</textarea>
+      <textarea class="historia-notas" placeholder="Notas, supuestos, decisiones, etc.">${historia.notas}</textarea>
       <div class="criterios" id="criterios-${objetivoIdx}-${funcId}-${idx}"></div>
       <button onclick="agregarCriterio(${objetivoIdx}, ${funcId}, ${idx})">➕ Añadir Criterio de Aceptación</button>
     </div>
   `;
   contenedor.appendChild(div);
-  if (historia && historia.criterios) {
+  if (historia.criterios && historia.criterios.length) {
     historia.criterios.forEach((crit, cidx) => agregarCriterio(objetivoIdx, funcId, idx, crit));
   }
 }
+
+function agregarHistoria(objetivoIdx, funcId, historia = null) {
+  const idx = objetivos[objetivoIdx].funcionalidades[funcId].historias.length;
+  let data;
+  if (!historia) {
+    data = {
+      id: '',
+      descripcion: '',
+      package: '',
+      dependencias: '',
+      estado: '',
+      responsable: '',
+      notas: '',
+      criterios: []
+    };
+    objetivos[objetivoIdx].funcionalidades[funcId].historias.push(data);
+  } else {
+    data = historia;
+  }
+  renderHistoria(objetivoIdx, funcId, data, idx);
+}
+
 
 function borrarHistoria(objetivoIdx, funcId, histId) {
   if (!confirm("¿Seguro que deseas borrar esta historia y todo su contenido?")) return;
@@ -706,14 +726,16 @@ function cleanFileName(str) {
 
 function descargarFeatures() {
   let totalDescargados = 0;
+  const nombresDescargados = new Set(); // Para evitar duplicados
+
   objetivos.forEach((objetivo, oidx) => {
     if (!objetivo.funcionalidades) return;
     objetivo.funcionalidades.forEach((func, fidx) => {
       let content = `# Visión: ${vision}\n# Objetivo ID: ${objetivo.id}\n# Objetivo: ${objetivo.descripcion}\n\n`;
-      content += `Feature: ${func.nombre}\n`;
-      content += `  Como ${func.actor}\n`;
-      content += `  Quiero ${func.nombre.toLowerCase()}\n`;
-      content += `  Para ${func.impacto}\n`;
+      content += `Feature: ${func.nombre || `Funcionalidad ${fidx+1}`}\n`;
+      content += `  Como ${func.actor || ""}\n`;
+      content += `  Quiero ${(func.nombre || `Funcionalidad ${fidx+1}`).toLowerCase()}\n`;
+      content += `  Para ${func.impacto || ""}\n`;
 
       if (func.background && func.background.trim()) {
         content += `\n  Background:\n`;
@@ -726,22 +748,23 @@ function descargarFeatures() {
       if (func.historias) {
         func.historias.forEach(hist => {
           content += `\n  # HISTORIA DE USUARIO: ${hist.id}\n`;
-          hist.descripcion.split('\n').forEach(line => {
-            content += `  # ${line.trim()}\n`;
-          });
-
+          if (hist.descripcion) {
+            hist.descripcion.split('\n').forEach(line => {
+              content += `  # ${line.trim()}\n`;
+            });
+          }
           if (hist.criterios) {
             hist.criterios.forEach((crit, cidx) => {
               content += `\n  # CRITERIO DE ACEPTACIÓN ${cidx + 1}: ${crit.comentario}\n`;
               if (crit.tags) content += `  ${crit.tags}\n`;
               content += `  Scenario: ${crit.titulo}\n`;
-              crit.given.split('\n').forEach((line, i) => {
+              if (crit.given) crit.given.split('\n').forEach((line, i) => {
                 if (line.trim()) content += `    ${i === 0 ? 'Given' : 'And'} ${line.trim().replace(/^(Given|And)\s+/i, '')}\n`;
               });
-              crit.when.split('\n').forEach((line, i) => {
+              if (crit.when) crit.when.split('\n').forEach((line, i) => {
                 if (line.trim()) content += `    ${i === 0 ? 'When' : 'And'} ${line.trim().replace(/^(When|And)\s+/i, '')}\n`;
               });
-              crit.then.split('\n').forEach((line, i) => {
+              if (crit.then) crit.then.split('\n').forEach((line, i) => {
                 if (line.trim()) content += `    ${i === 0 ? 'Then' : 'And'} ${line.trim().replace(/^(Then|And)\s+/i, '')}\n`;
               });
               if (crit.clases_unitarias) {
@@ -762,10 +785,14 @@ function descargarFeatures() {
         });
       }
 
-      const objId = cleanFileName(objetivo.id || `obj${oidx+1}`);
-      const funcId = cleanFileName(func.id || `func${fidx+1}`);
-      const funcName = cleanFileName(func.nombre || "");
+      const objId = cleanFileName(objetivo.id) || `obj${oidx+1}`;
+      const funcId = cleanFileName(func.id) || `func${fidx+1}`;
+      const funcName = cleanFileName(func.nombre) || `funcionalidad${fidx+1}`;
       const filename = `${objId}_${funcId}_${funcName}.feature`;
+
+      // Evita duplicados
+      if (nombresDescargados.has(filename)) return;
+      nombresDescargados.add(filename);
 
       const blob = new Blob([content], { type: 'text/plain' });
       const link = document.createElement('a');
@@ -874,6 +901,130 @@ window.onclick = function(event) {
     modal.style.display = 'none';
   }
 }
+
+
+//-------------------------------------
+function javaClassName(str) {
+  // Convierte a PascalCase y quita .java si lo tiene
+  return (str || "")
+    .replace(/\.java$/i, "")
+    .replace(/(^|_|\s|-)(\w)/g, (_, __, c) => c ? c.toUpperCase() : "")
+    .replace(/[^a-zA-Z0-9]/g, "");
+}
+
+function javaPackage(str) {
+  // Convierte a minúsculas y puntos
+  return (str || "")
+    .replace(/[^a-zA-Z0-9]+/g, ".")
+    .replace(/^\.+|\.+$/g, "")
+    .replace(/\.+/g, ".")
+    .toLowerCase();
+}
+
+function cleanFileName(str) {
+  return (str || '')
+    .toString()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .replace(/_+/g, '_')
+    .toLowerCase();
+}
+
+function descargarPruebasUnitariasZip() {
+  const zip = new JSZip();
+  const baseTestDir = "src/main/tests/";
+  const baseFeatureDir = "resources/features/";
+
+  objetivos.forEach(objetivo => {
+    if (!objetivo.funcionalidades) return;
+    objetivo.funcionalidades.forEach(func => {
+      const basePackage = func.namespace || "com.empresa";
+      const basePackagePath = basePackage.replace(/\./g, "/");
+      if (!func.historias) return;
+      func.historias.forEach(hist => {
+        const verticalSlice = hist.package || "verticalslice";
+        const fullPackage = javaPackage(basePackage + "." + verticalSlice);
+        const testPackagePath = baseTestDir + fullPackage.replace(/\./g, "/") + "/";
+        const featurePackagePath = baseFeatureDir + basePackagePath + "/";
+
+        // 1. Archivos de pruebas unitarias Java
+        if (hist.criterios) {
+          hist.criterios.forEach(crit => {
+            if (!crit.clases_unitarias || !crit.clases_unitarias.contexto) return;
+            const className = javaClassName(crit.clases_unitarias.contexto);
+            let javaFile = "";
+            javaFile += `package ${fullPackage};\n\n`;
+            javaFile += "import org.junit.jupiter.api.Test;\nimport static org.junit.jupiter.api.Assertions.*;\n\n";
+            javaFile += `public class ${className} {\n`;
+            (crit.clases_unitarias.especificacion || []).forEach(metodo => {
+              javaFile += `    @Test\n    public void ${metodo}() {\n        // TODO: Implementar prueba\n    }\n\n`;
+            });
+            javaFile += "}\n";
+            zip.file(testPackagePath + className + ".java", javaFile);
+          });
+        }
+
+        // 2. Archivos .feature
+        // Solo una vez por funcionalidad (por cada historia, si quieres uno por historia, cambia el nombre)
+        let featureContent = `Feature: ${func.nombre}\n`;
+        featureContent += `  Como ${func.actor}\n`;
+        featureContent += `  Quiero ${func.nombre.toLowerCase()}\n`;
+        featureContent += `  Para ${func.impacto}\n`;
+
+        if (func.background && func.background.trim()) {
+          featureContent += `\n  Background:\n`;
+          func.background.split('\n').forEach((line, idx) => {
+            const prefix = idx === 0 ? 'Given' : 'And';
+            featureContent += `    ${prefix} ${line.trim()}\n`;
+          });
+        }
+
+        if (func.historias) {
+          func.historias.forEach(historia => {
+            featureContent += `\n  # HISTORIA DE USUARIO: ${historia.id}\n`;
+            if (historia.descripcion) {
+              historia.descripcion.split('\n').forEach(line => {
+                featureContent += `  # ${line.trim()}\n`;
+              });
+            }
+            if (historia.criterios) {
+              historia.criterios.forEach((crit, cidx) => {
+                featureContent += `\n  # CRITERIO DE ACEPTACIÓN ${cidx + 1}: ${crit.comentario}\n`;
+                if (crit.tags) featureContent += `  ${crit.tags}\n`;
+                featureContent += `  Scenario: ${crit.titulo}\n`;
+                if (crit.given) crit.given.split('\n').forEach((line, i) => {
+                  if (line.trim()) featureContent += `    ${i === 0 ? 'Given' : 'And'} ${line.trim().replace(/^(Given|And)\s+/i, '')}\n`;
+                });
+                if (crit.when) crit.when.split('\n').forEach((line, i) => {
+                  if (line.trim()) featureContent += `    ${i === 0 ? 'When' : 'And'} ${line.trim().replace(/^(When|And)\s+/i, '')}\n`;
+                });
+                if (crit.then) crit.then.split('\n').forEach((line, i) => {
+                  if (line.trim()) featureContent += `    ${i === 0 ? 'Then' : 'And'} ${line.trim().replace(/^(Then|And)\s+/i, '')}\n`;
+                });
+              });
+            }
+          });
+        }
+
+        // El nombre del archivo feature puede ser por funcionalidad o por historia, aquí por funcionalidad:
+        const featureFileName = cleanFileName(func.nombre) + ".feature";
+        zip.file(featurePackagePath + featureFileName, featureContent);
+      });
+    });
+  });
+
+  zip.generateAsync({ type: "blob" }).then(function(content) {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(content);
+    link.download = "pruebas_unitarias_y_features.zip";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+}
+//-------------------------------------
+
 
 const ayudas = {
   "Visión": `
@@ -1083,7 +1234,33 @@ Ejemplo: CuandoElEstudianteHaFinalizadoElCurso.java
 Responde a la pregunta: ¿Qué comportamientos o resultados se esperan en este contexto?
 Lista de métodos de prueba que validan los comportamientos esperados en la clase de contexto.
 Ejemplo: debeGenerarCertificadoPdf, debePermitirDescargarCertificado
+  `.trim(),
+  
+  "Namespace/Base Package": `
+Responde a la pregunta: ¿En qué módulo, dominio o espacio de nombres se agrupa esta característica?
+Indica el namespace o base package donde se ubicará el código relacionado a esta característica o funcionalidad.
+Esto ayuda a organizar el código por módulos o contextos de negocio.
+
+Ejemplo:
+com.empresa.administrarusuario
+com.empresa.pagos
+com.empresa.cursos
+  `.trim(),
+
+  "Package/Vertical Slice": `
+Responde a la pregunta: ¿A qué slice, submódulo o caso de uso específico pertenece esta historia de usuario?
+Indica el nombre del package o vertical slice donde se implementará la lógica de esta historia de usuario.
+Esto permite organizar el código por acciones o flujos funcionales dentro del módulo ó característica.
+
+Ejemplo:
+registrarusuario | internal.command.registrarusuario
+actualizarusuario | internal.command.actualizarusuario
+eliminarusuario | internal.command.eliminarusuario
+consultarusuario | internal.query.consultarusuario
+procesarpago | internal.command.procesarpago
+emitircertificado | internal.command.emitircertificado
   `.trim()
+  
 };
 
 renderObjetivos();

@@ -1,0 +1,927 @@
+{
+  "vision": "Ser la plataforma líder en educación digital personalizada, facilitando el acceso a aprendizaje de calidad y promoviendo el éxito académico y profesional de nuestros usuarios.",
+  "objetivos_de_negocio": [
+    {
+      "id": "OBJ-1",
+      "descripcion": "Incrementar la tasa de retención de estudiantes activos del 65% al 85% para el cierre del año fiscal 2025.",
+      "kpi": "Tasa de retención anual > 85%",
+      "prioridad": "Alta",
+      "estado": "En desarrollo",
+      "responsable": "María González",
+      "notas": "Este objetivo es estratégico para la sostenibilidad del negocio.",
+      "tags": ["retención", "engagement", "fidelización"],
+      "funcionalidades": [
+        {
+          "id": "FUNC-1-1",
+          "nombre": "Seguimiento de Progreso del Estudiante",
+          "namespace": "co.aprendizajecontinuo.progreso",
+          "actor": "Estudiante",
+          "impacto": "Permitir a los estudiantes monitorear su avance y motivarlos a completar los cursos.",
+          "background": "Dado que soy un estudiante registrado\nY estoy inscrito en al menos un curso activo",
+          "estado": "En desarrollo",
+          "responsable": "Germán Mejía",
+          "notas": "Integración con módulo de cursos completada. Pendiente integración con notificaciones.",
+          "tags": ["progreso", "dashboard"],
+          "enlace_doc": "https://docs.plataforma.com/seguimiento-progreso",
+          "historias": [
+            {
+              "id": "HIST-1-1-1",
+              "descripcion": "Como estudiante, quiero ver mi progreso en cada curso para saber cuánto me falta para completarlo.",
+              "package": "internal.query.consultarprogreso",
+              "estado": "Listo para QA",
+              "responsable": "Carlos Ruiz",
+              "notas": "Validar visualización en dispositivos móviles.",
+              "tags": ["progreso", "visualizacion"],
+              "dependencias": [],
+              "criterios": [
+                {
+                  "comentario": "Visualización de barra de progreso",
+                  "tags": "@progreso @visualizacion @dashboard",
+                  "titulo": "Mostrar barra de progreso en el dashboard del curso",
+                  "estado": "Aprobado",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "Asegurar contraste de colores para accesibilidad.",
+                  "given": "Given que el estudiante ha completado algunas lecciones del curso",
+                  "when": "When accede al dashboard del curso",
+                  "then": "Then debería ver una barra de progreso que indique el porcentaje completado\nAnd la barra debe actualizarse automáticamente al completar nuevas lecciones",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElEstudianteHaCompletadoAlgunasLeccionesDelCurso.java",
+                    "especificacion": [
+                      "debeMostrarBarraDeProgresoEnDashboard",
+                      "debeActualizarBarraDeProgresoAlCompletarNuevaLeccion"
+                    ]
+                  }
+                },
+                {
+                  "comentario": "Actualización en tiempo real",
+                  "tags": "@progreso @realtime",
+                  "titulo": "Actualizar barra de progreso en tiempo real",
+                  "estado": "Aprobado",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "Requiere WebSockets para actualización instantánea.",
+                  "given": "Given que el estudiante está visualizando el dashboard del curso",
+                  "when": "When completa una lección",
+                  "then": "Then la barra de progreso debe reflejar el nuevo porcentaje sin recargar la página",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElEstudianteVisualizaDashboardDelCurso.java",
+                    "especificacion": [
+                      "debeActualizarBarraDeProgresoEnTiempoRealAlCompletarLeccion"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "id": "HIST-1-1-2",
+              "descripcion": "Como estudiante, quiero recibir notificaciones automáticas cuando alcance hitos importantes en mi progreso.",
+              "package": "internal.command.notificarhitos",
+              "estado": "En desarrollo",
+              "responsable": "Carlos Ruiz",
+              "notas": "Pendiente integración con microservicio de notificaciones.",
+              "tags": ["progreso", "notificaciones"],
+              "dependencias": ["HIST-1-1-1"],
+              "criterios": [
+                {
+                  "comentario": "Notificación de hito alcanzado",
+                  "tags": "@progreso @notificaciones @milestone",
+                  "titulo": "Enviar notificación al alcanzar el 50% del curso",
+                  "estado": "En desarrollo",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "Validar que la notificación se envía solo una vez por hito.",
+                  "given": "Given que el estudiante ha completado el 49% del curso",
+                  "when": "When completa una lección adicional",
+                  "then": "Then debería recibir una notificación de felicitación por alcanzar el 50% del curso",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElEstudianteHaCompletadoEl49PorCientoDelCurso.java",
+                    "especificacion": [
+                      "debeNotificarAlcanceDeHitoAlCompletarLeccion"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "id": "HIST-1-1-3",
+              "descripcion": "Como estudiante, quiero descargar un certificado al finalizar un curso para demostrar mi logro.",
+              "package": "internal.command.emitircertificado",
+              "estado": "En análisis",
+              "responsable": "Carlos Ruiz",
+              "notas": "Requiere validación legal del formato de certificado.",
+              "tags": ["certificado", "descarga"],
+              "dependencias": ["HIST-1-1-1"],
+              "criterios": [
+                {
+                  "comentario": "Generación de certificado",
+                  "tags": "@certificado @descarga",
+                  "titulo": "Descargar certificado al finalizar curso",
+                  "estado": "En análisis",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "El PDF debe incluir nombre, fecha y código QR de validación.",
+                  "given": "Given que el estudiante ha completado todas las lecciones y evaluaciones del curso",
+                  "when": "When accede a la sección de certificados",
+                  "then": "Then debería poder descargar un certificado en PDF con su nombre y fecha de finalización",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElEstudianteHaFinalizadoElCurso.java",
+                    "especificacion": [
+                      "debePermitirAccesoASeccionCertificados",
+                      "debeGenerarCertificadoPdf",
+                      "debePermitirDescargarCertificado"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "FUNC-1-2",
+          "nombre": "Gamificación y Recompensas",
+          "namespace": "co.aprendizajecontinuo.gamificacion",
+          "actor": "Estudiante",
+          "impacto": "Motivar a los estudiantes a completar cursos mediante insignias, puntos y rankings.",
+          "background": "Dado que el sistema de gamificación está habilitado\nY el estudiante tiene un perfil activo",
+          "estado": "En desarrollo",
+          "responsable": "Pedro Martínez",
+          "notas": "Gamificación activada para todos los cursos desde 2024.",
+          "tags": ["gamificación", "motivación"],
+          "enlace_doc": "https://docs.plataforma.com/gamificacion",
+          "historias": [
+            {
+              "id": "HIST-1-2-1",
+              "descripcion": "Como estudiante, quiero ganar insignias y puntos al completar módulos para sentirme motivado.",
+              "package": "internal.command.asignarinsignia",
+              "estado": "Listo para QA",
+              "responsable": "Sofía Torres",
+              "notas": "",
+              "tags": ["insignias", "puntos"],
+              "dependencias": [],
+              "criterios": [
+                {
+                  "comentario": "Asignación de insignias y puntos",
+                  "tags": "@gamificacion @insignias @puntos",
+                  "titulo": "Otorgar insignia y puntos al completar un módulo",
+                  "estado": "Aprobado",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "",
+                  "given": "Given que el estudiante ha completado todos los temas de un módulo",
+                  "when": "When finaliza el último tema del módulo",
+                  "then": "Then el sistema debe asignar una insignia y puntos correspondientes al módulo completado\nAnd la insignia debe aparecer en el perfil del estudiante\nAnd los puntos deben sumarse al ranking general",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElEstudianteHaCompletadoTodosLosTemasDelModulo.java",
+                    "especificacion": [
+                      "debeAsignarInsigniaAlCompletarModulo",
+                      "debeSumarPuntosAlCompletarModulo",
+                      "debeActualizarRankingGeneralAlCompletarModulo"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "id": "HIST-1-2-2",
+              "descripcion": "Como estudiante, quiero ver un ranking de los mejores estudiantes para comparar mi desempeño.",
+              "package": "internal.query.consultarranking",
+              "estado": "En desarrollo",
+              "responsable": "Sofía Torres",
+              "notas": "Ranking visible solo para estudiantes activos.",
+              "tags": ["ranking", "competencia"],
+              "dependencias": [],
+              "criterios": [
+                {
+                  "comentario": "Visualización de ranking",
+                  "tags": "@gamificacion @ranking",
+                  "titulo": "Mostrar ranking de estudiantes",
+                  "estado": "En desarrollo",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "",
+                  "given": "Given que existen al menos 10 estudiantes con puntos acumulados",
+                  "when": "When accedo a la sección de ranking",
+                  "then": "Then debería ver una lista ordenada de los estudiantes con más puntos\nAnd mi posición debe estar resaltada",
+                  "clases_unitarias": {
+                    "contexto": "CuandoExistenEstudiantesConPuntosAcumulados.java",
+                    "especificacion": [
+                      "debeMostrarListaOrdenadaDeRanking",
+                      "debeResaltarPosicionDelUsuarioEnRanking"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "FUNC-1-3",
+          "nombre": "Gestión de Inscripciones",
+          "namespace": "co.aprendizajecontinuo.inscripciones",
+          "actor": "Estudiante, Administrador",
+          "impacto": "Permitir a los estudiantes inscribirse y desinscribirse de cursos, y a los administradores gestionar inscripciones masivas.",
+          "background": "Dado que el estudiante tiene una cuenta activa\nY el curso está disponible para inscripción",
+          "estado": "En desarrollo",
+          "responsable": "Luis Fernández",
+          "notas": "Funcionalidad crítica para la operación diaria.",
+          "tags": ["inscripción", "gestión"],
+          "enlace_doc": "https://docs.plataforma.com/inscripciones",
+          "historias": [
+            {
+              "id": "HIST-1-3-1",
+              "descripcion": "Como estudiante, quiero inscribirme en cursos disponibles para ampliar mis conocimientos.",
+              "package": "internal.command.registrarinscripcion",
+              "estado": "Listo para QA",
+              "responsable": "Marta Díaz",
+              "notas": "",
+              "tags": ["inscripción", "estudiante"],
+              "dependencias": [],
+              "criterios": [
+                {
+                  "comentario": "Inscripción individual",
+                  "tags": "@inscripcion @estudiante",
+                  "titulo": "Permitir inscripción a cursos disponibles",
+                  "estado": "Aprobado",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "",
+                  "given": "Given que el estudiante está autenticado y el curso está abierto",
+                  "when": "When hace clic en 'Inscribirse'",
+                  "then": "Then el estudiante debe quedar inscrito y recibir un correo de confirmación",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElEstudianteEstaAutenticadoYCursoAbierto.java",
+                    "especificacion": [
+                      "debeRegistrarInscripcionAlCurso",
+                      "debeEnviarCorreoDeConfirmacionDeInscripcion"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "id": "HIST-1-3-2",
+              "descripcion": "Como administrador, quiero inscribir a varios estudiantes a la vez para facilitar la gestión de grupos.",
+              "package": "internal.command.inscripcionmasiva",
+              "estado": "En desarrollo",
+              "responsable": "Marta Díaz",
+              "notas": "Validar carga masiva de archivos CSV.",
+              "tags": ["inscripción", "admin", "masiva"],
+              "dependencias": [],
+              "criterios": [
+                {
+                  "comentario": "Inscripción masiva",
+                  "tags": "@inscripcion @admin @masiva",
+                  "titulo": "Permitir inscripción masiva de estudiantes",
+                  "estado": "En desarrollo",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "",
+                  "given": "Given que el administrador tiene una lista de estudiantes y el curso está abierto",
+                  "when": "When sube un archivo con los datos de los estudiantes",
+                  "then": "Then todos los estudiantes deben quedar inscritos y recibir notificación",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElAdministradorTieneListaDeEstudiantesYCursoAbierto.java",
+                    "especificacion": [
+                      "debeRegistrarInscripcionMasivaAlSubirArchivo",
+                      "debeEnviarNotificacionesMasivasTrasInscripcion"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OBJ-2",
+      "descripcion": "Aumentar en un 40% la cantidad de cursos multimedia interactivos publicados por instructores certificados antes de finalizar el próximo semestre.",
+      "kpi": "Cantidad de cursos multimedia publicados > 140",
+      "prioridad": "Alta",
+      "estado": "En desarrollo",
+      "responsable": "Javier Ortega",
+      "notas": "Enfocado en la calidad y variedad de contenidos.",
+      "tags": ["multimedia", "crecimiento", "instructores"],
+      "funcionalidades": [
+        {
+          "id": "FUNC-2-1",
+          "nombre": "Gestión de Contenidos Multimedia",
+          "namespace": "co.aprendizajecontinuo.contenidos",
+          "actor": "Instructor, Administrador",
+          "impacto": "Permitir a los instructores y administradores subir, organizar y actualizar videos, documentos y recursos interactivos.",
+          "background": "Dado que soy un instructor autenticado\nO soy un administrador con permisos de contenido",
+          "estado": "En desarrollo",
+          "responsable": "Patricia Salinas",
+          "notas": "Soporte para archivos de hasta 2GB.",
+          "tags": ["contenido", "multimedia", "upload"],
+          "enlace_doc": "https://docs.plataforma.com/contenidos-multimedia",
+          "historias": [
+            {
+              "id": "HIST-2-1-1",
+              "descripcion": "Como instructor, quiero subir videos y documentos para enriquecer mis cursos.",
+              "package": "internal.command.subircontenido",
+              "estado": "Listo para QA",
+              "responsable": "Patricia Salinas",
+              "notas": "",
+              "tags": ["upload", "video", "documento"],
+              "dependencias": [],
+              "criterios": [
+                {
+                  "comentario": "Subida de archivos multimedia",
+                  "tags": "@contenido @multimedia @upload",
+                  "titulo": "Permitir subida de videos y documentos",
+                  "estado": "Aprobado",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "Validar tipos de archivo permitidos.",
+                  "given": "Given que el instructor está en la sección de gestión de contenidos",
+                  "when": "When selecciona un archivo de video o documento y hace clic en 'Subir'",
+                  "then": "Then el archivo debe almacenarse correctamente\nAnd debe aparecer en la lista de recursos del curso",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElInstructorEstaEnGestionDeContenidos.java",
+                    "especificacion": [
+                      "debeAlmacenarArchivoAlSubir",
+                      "debeListarRecursoSubidoEnCurso"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "id": "HIST-2-1-2",
+              "descripcion": "Como administrador, quiero aprobar o rechazar contenidos subidos por instructores para asegurar la calidad.",
+              "package": "internal.command.aprobarcontenido",
+              "estado": "En desarrollo",
+              "responsable": "Patricia Salinas",
+              "notas": "Notificar al instructor en caso de rechazo.",
+              "tags": ["aprobacion", "contenido", "admin"],
+              "dependencias": [],
+              "criterios": [
+                {
+                  "comentario": "Aprobación de contenido",
+                  "tags": "@contenido @admin @aprobacion",
+                  "titulo": "Permitir aprobar o rechazar contenidos",
+                  "estado": "En desarrollo",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "",
+                  "given": "Given que hay contenidos pendientes de revisión",
+                  "when": "When el administrador revisa y selecciona aprobar o rechazar",
+                  "then": "Then el contenido debe cambiar de estado y notificar al instructor",
+                  "clases_unitarias": {
+                    "contexto": "CuandoExistenContenidosPendientesDeRevision.java",
+                    "especificacion": [
+                      "debeActualizarEstadoDeContenidoAlAprobarORechazar",
+                      "debeNotificarAlInstructorTrasRevision"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "FUNC-2-2",
+          "nombre": "Creación de Evaluaciones Interactivas",
+          "namespace": "co.aprendizajecontinuo.evaluaciones",
+          "actor": "Instructor",
+          "impacto": "Facilitar la creación de cuestionarios y ejercicios interactivos para evaluar a los estudiantes.",
+          "background": "Dado que el curso tiene al menos un módulo creado",
+          "estado": "En desarrollo",
+          "responsable": "Ricardo Pérez",
+          "notas": "Soporte para preguntas multimedia en cuestionarios.",
+          "tags": ["evaluacion", "cuestionario", "interactivo"],
+          "enlace_doc": "https://docs.plataforma.com/evaluaciones",
+          "historias": [
+            {
+              "id": "HIST-2-2-1",
+              "descripcion": "Como instructor, quiero crear cuestionarios con preguntas de opción múltiple para evaluar el aprendizaje.",
+              "package": "internal.command.crearcuestionario",
+              "estado": "Listo para QA",
+              "responsable": "Ricardo Pérez",
+              "notas": "",
+              "tags": ["cuestionario", "preguntas"],
+              "dependencias": [],
+              "criterios": [
+                {
+                  "comentario": "Creación de cuestionario",
+                  "tags": "@evaluacion @cuestionario",
+                  "titulo": "Permitir crear cuestionarios con preguntas y respuestas",
+                  "estado": "Aprobado",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "",
+                  "given": "Given que el instructor está en la sección de evaluaciones del curso",
+                  "when": "When añade una nueva pregunta de opción múltiple y guarda el cuestionario",
+                  "then": "Then el cuestionario debe estar disponible para los estudiantes inscritos\nAnd las respuestas deben poder ser calificadas automáticamente",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElInstructorEstaEnSeccionEvaluaciones.java",
+                    "especificacion": [
+                      "debeCrearCuestionarioConPreguntasYRespuestas",
+                      "debeHacerCuestionarioDisponibleAEstudiantes",
+                      "debeCalificarRespuestasAutomaticamente"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "id": "HIST-2-2-2",
+              "descripcion": "Como instructor, quiero programar la fecha de disponibilidad de las evaluaciones.",
+              "package": "internal.command.programarevaluacion",
+              "estado": "En desarrollo",
+              "responsable": "Ricardo Pérez",
+              "notas": "Validar zona horaria del instructor.",
+              "tags": ["evaluacion", "programacion"],
+              "dependencias": [],
+              "criterios": [
+                {
+                  "comentario": "Programación de evaluaciones",
+                  "tags": "@evaluacion @programacion",
+                  "titulo": "Permitir programar fecha de inicio y fin de una evaluación",
+                  "estado": "En desarrollo",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "",
+                  "given": "Given que el instructor está creando una evaluación",
+                  "when": "When define la fecha de inicio y fin y guarda la evaluación",
+                  "then": "Then la evaluación solo debe estar disponible para los estudiantes dentro del rango de fechas definido",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElInstructorEstaCreandoEvaluacion.java",
+                    "especificacion": [
+                      "debePermitirDefinirFechasDeEvaluacion",
+                      "debeEnfocarDisponibilidadDeEvaluacionPorFechas"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "FUNC-2-3",
+          "nombre": "Gestión de Reportes y Analíticas",
+          "namespace": "co.aprendizajecontinuo.reportes",
+          "actor": "Administrador, Instructor",
+          "impacto": "Permitir a los administradores e instructores visualizar reportes de avance, participación y resultados.",
+          "background": "Dado que existen cursos y estudiantes activos",
+          "estado": "En desarrollo",
+          "responsable": "Javier Ortega",
+          "notas": "Reportes exportables en PDF y Excel.",
+          "tags": ["reportes", "analiticas"],
+          "enlace_doc": "https://docs.plataforma.com/reportes",
+          "historias": [
+            {
+              "id": "HIST-2-3-1",
+              "descripcion": "Como administrador, quiero ver reportes de avance global para tomar decisiones estratégicas.",
+              "package": "internal.command.reporteavance",
+              "estado": "Listo para QA",
+              "responsable": "Javier Ortega",
+              "notas": "",
+              "tags": ["avance", "admin"],
+              "dependencias": [],
+              "criterios": [
+                {
+                  "comentario": "Reporte de avance global",
+                  "tags": "@reportes @admin",
+                  "titulo": "Visualizar reporte de avance global",
+                  "estado": "Aprobado",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "",
+                  "given": "Given que existen datos de avance de estudiantes",
+                  "when": "When el administrador accede a la sección de reportes",
+                  "then": "Then debe ver gráficos y tablas con el avance promedio por curso y por estudiante",
+                  "clases_unitarias": {
+                    "contexto": "CuandoExistenDatosDeAvanceDeEstudiantes.java",
+                    "especificacion": [
+                      "debeRenderizarGraficosDeAvanceGlobal",
+                      "debeRenderizarTablasDeAvanceGlobal"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "id": "HIST-2-3-2",
+              "descripcion": "Como instructor, quiero descargar reportes de resultados de evaluaciones para analizar el desempeño de mis estudiantes.",
+              "package": "internal.command.descargarevaluaciones",
+              "estado": "En desarrollo",
+              "responsable": "Javier Ortega",
+              "notas": "Validar formato de exportación.",
+              "tags": ["evaluacion", "descarga"],
+              "dependencias": [],
+              "criterios": [
+                {
+                  "comentario": "Descarga de reporte de evaluaciones",
+                  "tags": "@reportes @instructor @evaluacion",
+                  "titulo": "Permitir descarga de reporte de evaluaciones",
+                  "estado": "En desarrollo",
+                  "responsable": "QA - Laura Méndez",
+                  "notas": "",
+                  "given": "Given que existen evaluaciones calificadas",
+                  "when": "When el instructor solicita el reporte",
+                  "then": "Then debe poder descargar un archivo con los resultados detallados",
+                  "clases_unitarias": {
+                    "contexto": "CuandoExistenEvaluacionesCalificadas.java",
+                    "especificacion": [
+                      "debeGenerarArchivoDeReporteDeEvaluaciones",
+                      "debePermitirDescargarReporteDeEvaluaciones"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+	{
+	  "id": "OBJ-3",
+	  "descripcion": "Reducir el tiempo promedio de respuesta a dudas de estudiantes a menos de 24 horas durante el ciclo escolar.",
+	  "kpi": "Tiempo promedio de respuesta < 24h",
+	  "prioridad": "Alta",
+	  "estado": "En desarrollo",
+	  "responsable": "Santiago Herrera",
+	  "notas": "Este objetivo impacta directamente en la satisfacción del usuario.",
+	  "tags": ["soporte", "resolución", "dudas"],
+	  "funcionalidades": [
+		{
+		  "id": "FUNC-3-1",
+		  "nombre": "Foro de Preguntas y Respuestas",
+		  "namespace": "co.aprendizajecontinuo.foro",
+		  "actor": "Estudiante, Instructor, Administrador",
+		  "impacto": "Facilitar la interacción y resolución de dudas entre estudiantes, instructores y administradores.",
+		  "background": "Dado que el curso tiene el foro habilitado",
+		  "estado": "En desarrollo",
+		  "responsable": "Andrea Ríos",
+		  "notas": "El foro debe ser moderado para evitar spam.",
+		  "tags": ["foro", "preguntas", "respuestas"],
+		  "enlace_doc": "https://docs.plataforma.com/foro",
+		  "historias": [
+			{
+			  "id": "HIST-3-1-1",
+			  "descripcion": "Como estudiante, quiero publicar preguntas en el foro para recibir ayuda de instructores o compañeros.",
+			  "package": "internal.command.publicarpregunta",
+			  "estado": "Listo para QA",
+			  "responsable": "Andrea Ríos",
+			  "notas": "",
+			  "tags": ["foro", "preguntas"],
+			  "dependencias": [],
+			  "criterios": [
+				{
+				  "comentario": "Publicación de preguntas",
+				  "tags": "@foro @preguntas",
+				  "titulo": "Permitir publicar preguntas en el foro",
+				  "estado": "Aprobado",
+				  "responsable": "QA - Laura Méndez",
+				  "notas": "",
+				  "given": "Given que el estudiante está inscrito en el curso y el foro está habilitado",
+				  "when": "When redacta una pregunta y la publica",
+				  "then": "Then la pregunta debe aparecer en el foro del curso\nAnd debe estar visible para todos los participantes",
+				  "clases_unitarias": {
+					"contexto": "CuandoElEstudianteInscritoYForoHabilitado.java",
+					"especificacion": [
+					  "debePublicarPreguntaEnForo",
+					  "debeMostrarPreguntaEnForoParaTodos"
+					]
+				  }
+				}
+			  ]
+			},
+			{
+			  "id": "HIST-3-1-2",
+			  "descripcion": "Como instructor, quiero responder preguntas del foro y marcar las respuestas como oficiales.",
+			  "package": "internal.command.responderoficial",
+			  "estado": "En desarrollo",
+			  "responsable": "Andrea Ríos",
+			  "notas": "Solo instructores pueden marcar respuestas como oficiales.",
+			  "tags": ["foro", "respuestas", "instructor"],
+			  "dependencias": ["HIST-3-1-1"],
+			  "criterios": [
+				{
+				  "comentario": "Respuesta oficial de instructor",
+				  "tags": "@foro @respuestas @instructor",
+				  "titulo": "Permitir marcar respuesta como oficial",
+				  "estado": "En desarrollo",
+				  "responsable": "QA - Laura Méndez",
+				  "notas": "",
+				  "given": "Given que el instructor está visualizando una pregunta sin respuesta oficial",
+				  "when": "When responde la pregunta y marca la respuesta como oficial",
+				  "then": "Then la respuesta debe destacarse como oficial en el foro",
+				  "clases_unitarias": {
+					"contexto": "CuandoElInstructorVisualizaPreguntaSinRespuestaOficial.java",
+					"especificacion": [
+					  "debeMarcarRespuestaComoOficial",
+					  "debeDestacarRespuestaOficialEnForo"
+					]
+				  }
+				}
+			  ]
+			},
+			{
+			  "id": "FUNC-3-2",
+			  "nombre": "Sistema de Mensajería Interna",
+			  "namespace": "co.aprendizajecontinuo.mensajeria",
+			  "actor": "Estudiante, Instructor, Administrador",
+			  "impacto": "Permitir la comunicación directa y privada entre estudiantes, instructores y administradores.",
+			  "background": "Dado que ambos usuarios tienen cuentas activas",
+			  "estado": "En desarrollo",
+			  "responsable": "Gabriela Castro",
+			  "notas": "Mensajes cifrados de extremo a extremo.",
+			  "tags": ["mensajeria", "privado", "comunicacion"],
+			  "enlace_doc": "https://docs.plataforma.com/mensajeria",
+			  "historias": [
+				{
+				  "id": "HIST-3-2-1",
+				  "descripcion": "Como estudiante, quiero enviar mensajes privados a mi instructor para resolver dudas específicas.",
+				  "package": "internal.command.enviarmensajeprivado",
+				  "estado": "Listo para QA",
+				  "responsable": "Gabriela Castro",
+				  "notas": "",
+				  "tags": ["mensajeria", "privado"],
+				  "dependencias": [],
+				  "criterios": [
+					{
+					  "comentario": "Envío de mensajes privados",
+					  "tags": "@mensajeria @privado",
+					  "titulo": "Permitir enviar mensajes privados",
+					  "estado": "Aprobado",
+					  "responsable": "QA - Laura Méndez",
+					  "notas": "",
+					  "given": "Given que el estudiante y el instructor tienen cuentas activas",
+					  "when": "When el estudiante redacta y envía un mensaje privado",
+					  "then": "Then el instructor debe recibir una notificación y poder responder al mensaje",
+					  "clases_unitarias": {
+						"contexto": "CuandoEstudianteEInstructorConCuentasActivas.java",
+						"especificacion": [
+						  "debeEnviarMensajePrivadoAInstructor",
+						  "debeNotificarInstructorDeNuevoMensaje",
+						  "debePermitirRespuestaDeInstructor"
+						]
+					  }
+					}
+				  ]
+				},
+				{
+				  "id": "HIST-3-2-2",
+				  "descripcion": "Como administrador, quiero enviar mensajes masivos a todos los estudiantes de un curso.",
+				  "package": "internal.command.enviarmensajemasivo",
+				  "estado": "En desarrollo",
+				  "responsable": "Gabriela Castro",
+				  "notas": "Limitar mensajes masivos a 1 por día por curso.",
+				  "tags": ["mensajeria", "admin", "masivo"],
+				  "dependencias": [],
+				  "criterios": [
+					{
+					  "comentario": "Mensajería masiva",
+					  "tags": "@mensajeria @admin @masivo",
+					  "titulo": "Permitir envío de mensajes masivos",
+					  "estado": "En desarrollo",
+					  "responsable": "QA - Laura Méndez",
+					  "notas": "",
+					  "given": "Given que el administrador está autenticado y el curso tiene estudiantes inscritos",
+					  "when": "When redacta un mensaje y selecciona 'Enviar a todos'",
+					  "then": "Then todos los estudiantes deben recibir el mensaje en su bandeja de entrada",
+					  "clases_unitarias": {
+						"contexto": "CuandoAdministradorAutenticadoYCursoConEstudiantes.java",
+						"especificacion": [
+						  "debeEnviarMensajeMasivoATodosLosEstudiantes",
+						  "debeRecibirMensajeMasivoEnBandejaDeEntrada"
+						]
+					  }
+					}
+				  ]
+				}
+			  ]
+			},
+			{
+			  "id": "FUNC-3-3",
+			  "nombre": "Gestión de Usuarios y Roles",
+			  "namespace": "co.aprendizajecontinuo.usuarios",
+			  "actor": "Administrador",
+			  "impacto": "Permitir a los administradores crear, editar, eliminar y asignar roles a usuarios.",
+			  "background": "Dado que el administrador tiene permisos de gestión de usuarios",
+			  "estado": "En desarrollo",
+			  "responsable": "Santiago Herrera",
+			  "notas": "Auditoría de cambios habilitada.",
+			  "tags": ["usuarios", "roles", "admin"],
+			  "enlace_doc": "https://docs.plataforma.com/usuarios-roles",
+			  "historias": [
+				{
+				  "id": "HIST-3-3-1",
+				  "descripcion": "Como administrador, quiero crear cuentas de usuario para nuevos instructores y estudiantes.",
+				  "package": "internal.command.crearusuario",
+				  "estado": "Listo para QA",
+				  "responsable": "Santiago Herrera",
+				  "notas": "",
+				  "tags": ["usuarios", "creacion"],
+				  "dependencias": [],
+				  "criterios": [
+					{
+					  "comentario": "Creación de usuarios",
+					  "tags": "@usuarios @admin @creacion",
+					  "titulo": "Permitir crear usuarios con diferentes roles",
+					  "estado": "Aprobado",
+					  "responsable": "QA - Laura Méndez",
+					  "notas": "",
+					  "given": "Given que el administrador está en la sección de gestión de usuarios",
+					  "when": "When completa el formulario de nuevo usuario y selecciona el rol",
+					  "then": "Then el usuario debe ser creado y recibir un correo de bienvenida con instrucciones de acceso",
+					  "clases_unitarias": {
+						"contexto": "CuandoAdministradorEnGestionDeUsuarios.java",
+						"especificacion": [
+						  "debeCrearUsuarioConRol",
+						  "debeEnviarCorreoDeBienvenida"
+						]
+					  }
+					}
+				  ]
+				},
+				{
+				  "id": "HIST-3-3-2",
+				  "descripcion": "Como administrador, quiero desactivar cuentas de usuarios inactivos para mantener la seguridad.",
+				  "package": "internal.command.desactivarusuario",
+				  "estado": "En desarrollo",
+				  "responsable": "Santiago Herrera",
+				  "notas": "Desactivación reversible por 30 días.",
+				  "tags": ["usuarios", "desactivacion"],
+				  "dependencias": [],
+				  "criterios": [
+					{
+					  "comentario": "Desactivación de usuarios",
+					  "tags": "@usuarios @admin @desactivacion",
+					  "titulo": "Permitir desactivar cuentas de usuario",
+					  "estado": "En desarrollo",
+					  "responsable": "QA - Laura Méndez",
+					  "notas": "",
+					  "given": "Given que el administrador identifica usuarios inactivos",
+					  "when": "When selecciona usuarios y hace clic en 'Desactivar'",
+					  "then": "Then las cuentas deben quedar inactivas y los usuarios deben ser notificados",
+					  "clases_unitarias": {
+						"contexto": "CuandoAdministradorIdentificaUsuariosInactivos.java",
+						"especificacion": [
+						  "debeDesactivarCuentasDeUsuariosInactivos",
+						  "debeNotificarUsuariosDesactivados"
+						]
+					  }
+					}
+				  ]
+				}
+			  ]
+			}
+		  ]
+		}		
+	  ]
+	},
+	{
+	  "id": "OBJ-4",
+	  "descripcion": "Aumentar la conversión de usuarios invitados a estudiantes registrados en un 25% durante el próximo año.",
+	  "kpi": "Tasa de conversión de invitados > 25%",
+	  "prioridad": "Media",
+	  "estado": "En desarrollo",
+	  "responsable": "Valeria Paredes",
+	  "notas": "Campañas de marketing digital en curso.",
+	  "tags": ["conversión", "registro", "onboarding"],
+	  "funcionalidades": [
+		{
+		  "id": "FUNC-4-1",
+		  "nombre": "Registro y Onboarding de Usuarios",
+		  "namespace": "co.aprendizajecontinuo.onboarding",
+		  "actor": "Invitado, Estudiante",
+		  "impacto": "Facilitar el registro y la activación de cuentas para nuevos usuarios.",
+		  "background": "Dado que el usuario es un invitado y accede a la página de registro",
+		  "estado": "En desarrollo",
+		  "responsable": "Valeria Paredes",
+		  "notas": "Onboarding interactivo disponible solo en español.",
+		  "tags": ["registro", "onboarding"],
+		  "enlace_doc": "https://docs.plataforma.com/registro-onboarding",
+		  "historias": [
+			{
+			  "id": "HIST-4-1-1",
+			  "descripcion": "Como invitado, quiero registrarme fácilmente usando mi correo electrónico o redes sociales.",
+			  "package": "internal.command.registrarusuario",
+			  "estado": "Listo para QA",
+			  "responsable": "Valeria Paredes",
+			  "notas": "",
+			  "tags": ["registro", "social"],
+			  "dependencias": [],
+			  "criterios": [
+				{
+				  "comentario": "Registro con email y redes sociales",
+				  "tags": "@registro @invitado @social",
+				  "titulo": "Permitir registro con email y redes sociales",
+				  "estado": "Aprobado",
+				  "responsable": "QA - Laura Méndez",
+				  "notas": "",
+				  "given": "Given que el invitado está en la página de registro",
+				  "when": "When completa el formulario o selecciona una red social",
+				  "then": "Then debe crearse la cuenta y enviarse un correo de activación o confirmación",
+				  "clases_unitarias": {
+					"contexto": "CuandoInvitadoEnPaginaDeRegistro.java",
+					"especificacion": [
+					  "debeCrearCuentaAlCompletarFormularioOSeleccionarRedSocial",
+					  "debeEnviarCorreoDeActivacionOConfirmacion"
+					]
+				  }
+				}
+			  ]
+			},
+			{
+			  "id": "HIST-4-1-2",
+			  "descripcion": "Como estudiante nuevo, quiero recibir un tutorial interactivo al ingresar por primera vez.",
+			  "package": "internal.command.onboarding",
+			  "estado": "En desarrollo",
+			  "responsable": "Valeria Paredes",
+			  "notas": "El tutorial debe ser opcional y repetible.",
+			  "tags": ["onboarding", "tutorial"],
+			  "dependencias": ["HIST-4-1-1"],
+			  "criterios": [
+				{
+				  "comentario": "Onboarding interactivo",
+				  "tags": "@onboarding @tutorial",
+				  "titulo": "Mostrar tutorial interactivo al primer acceso",
+				  "estado": "En desarrollo",
+				  "responsable": "QA - Laura Méndez",
+				  "notas": "",
+				  "given": "Given que el estudiante accede por primera vez a la plataforma",
+				  "when": "When inicia sesión después del registro",
+				  "then": "Then debe mostrarse un tutorial interactivo con los pasos básicos de uso",
+				  "clases_unitarias": {
+					"contexto": "CuandoEstudianteAccedePorPrimeraVez.java",
+					"especificacion": [
+					  "debeMostrarTutorialInteractivoAlPrimerAcceso"
+					]
+				  }
+				}
+			  ]
+			}
+		  ]
+		},
+		{
+		  "id": "FUNC-4-2",
+		  "nombre": "Gestión de Pagos y Suscripciones",
+		  "namespace": "co.aprendizajecontinuo.pagos",
+		  "actor": "Estudiante, Administrador",
+		  "impacto": "Permitir a los estudiantes pagar cursos y a los administradores gestionar suscripciones y facturación.",
+		  "background": "Dado que el estudiante desea inscribirse en un curso de pago",
+		  "estado": "En desarrollo",
+		  "responsable": "Jorge Ramírez",
+		  "notas": "Integración con pasarelas de pago Stripe y PayPal.",
+		  "tags": ["pagos", "suscripciones"],
+		  "enlace_doc": "https://docs.plataforma.com/pagos-suscripciones",
+		  "historias": [
+			{
+			  "id": "HIST-4-2-1",
+			  "descripcion": "Como estudiante, quiero pagar mi curso con diferentes métodos de pago para mayor comodidad.",
+			  "package": "internal.command.procesarpago",
+			  "estado": "Listo para QA",
+			  "responsable": "Jorge Ramírez",
+			  "notas": "",
+			  "tags": ["pagos", "metodos"],
+			  "dependencias": [],
+			  "criterios": [
+				{
+				  "comentario": "Pago con tarjeta, PayPal y transferencia",
+				  "tags": "@pagos @estudiante @metodos",
+				  "titulo": "Permitir múltiples métodos de pago",
+				  "estado": "Aprobado",
+				  "responsable": "QA - Laura Méndez",
+				  "notas": "",
+				  "given": "Given que el estudiante selecciona un curso de pago",
+				  "when": "When elige el método de pago y completa la transacción",
+				  "then": "Then el sistema debe registrar el pago y habilitar el acceso al curso",
+				  "clases_unitarias": {
+					"contexto": "CuandoEstudianteSeleccionaCursoDePago.java",
+					"especificacion": [
+					  "debeRegistrarPagoAlCompletarTransaccion",
+					  "debeHabilitarAccesoAlCursoTrasPago"
+					]
+				  }
+				}
+			  ]
+			},
+			{
+			  "id": "HIST-4-2-2",
+			  "descripcion": "Como administrador, quiero ver reportes de pagos y suscripciones para controlar la facturación.",
+			  "package": "internal.command.reportepagos",
+			  "estado": "En desarrollo",
+			  "responsable": "Jorge Ramírez",
+			  "notas": "Exportación disponible en PDF y Excel.",
+			  "tags": ["pagos", "reportes"],
+			  "dependencias": [],
+			  "criterios": [
+				{
+				  "comentario": "Reporte de pagos y suscripciones",
+				  "tags": "@pagos @admin @reportes",
+				  "titulo": "Visualizar y exportar reportes de pagos",
+				  "estado": "En desarrollo",
+				  "responsable": "QA - Laura Méndez",
+				  "notas": "",
+				  "given": "Given que existen pagos y suscripciones registrados",
+				  "when": "When el administrador accede a la sección de reportes de pagos",
+				  "then": "Then debe poder visualizar y exportar los reportes en formato Excel o PDF",
+				  "clases_unitarias": {
+					"contexto": "CuandoExistenPagosYSuscripcionesRegistrados.java",
+					"especificacion": [
+					  "debeVisualizarReporteDePagosYSuscripciones",
+					  "debeExportarReporteEnExcelOPdf"
+					]
+				  }
+				}
+			  ]
+			}
+		  ]
+		}
+	  ]
+	}
+  ]
+}
