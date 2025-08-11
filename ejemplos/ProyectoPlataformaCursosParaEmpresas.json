@@ -1,0 +1,313 @@
+{
+  "vision": "Ser la plataforma líder en gestión de cursos y certificaciones para empresas.",
+  "objetivos_de_negocio": [
+    {
+      "id": "OBJ-1",
+      "descripcion": "Aumentar la tasa de finalización de cursos en un 30% en 2025.",
+      "kpi": "Finalización de cursos > 80%",
+      "prioridad": "Alta",
+      "responsable": "Líder de Producto",
+      "estado": "En desarrollo",
+      "notas": "Este objetivo es clave para la retención de clientes.",
+      "funcionalidades": [
+        {
+          "id": "FUNC-1-1",
+          "nombre": "Gestión de Inscripciones",
+          "namespace": "com.empresa.cursos.inscripciones",
+          "actor": "Administrador",
+          "impacto": "Permitir inscribir usuarios a cursos de manera eficiente.",
+          "tags": "inscripciones, cursos",
+          "estado": "En desarrollo",
+          "responsable": "Equipo Backend",
+          "notas": "",
+          "enlace_doc": "https://miempresa.com/docs/inscripciones",
+          "background": "Dado que el usuario es administrador del sistema",
+          "historias": [
+            {
+              "id": "HIST-1-1-1",
+              "descripcion": "Como administrador, quiero inscribir usuarios a un curso para que puedan acceder al contenido.",
+              "package": "internal.command.inscribirusuario",
+              "dependencias": "",
+              "estado": "Listo para QA",
+              "responsable": "Analista de requisitos",
+              "notas": "",
+              "criterios": [
+                {
+                  "comentario": "Inscripción exitosa de un usuario a un curso con datos personalizados.",
+                  "tags": "@inscripcion @custom",
+                  "titulo": "Inscribir usuario a curso con dirección de envío",
+                  "estado": "Aprobado",
+                  "notas": "",
+                  "given": "Given que el usuario es administrador\nAnd el usuario a inscribir existe\nAnd el curso está activo",
+                  "when": "When selecciona el usuario y el curso\nAnd presiona 'Inscribir'",
+                  "then": "Then el usuario queda inscrito en el curso\nAnd recibe un correo de confirmación",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElAdminInscribeUsuarioACurso.java",
+                    "especificacion": [
+                      "debeInscribirUsuarioEnCurso",
+                      "debeEnviarCorreoDeConfirmacion"
+                    ]
+                  },
+                  "diseno_tecnico": {
+                    "clases": [
+                      {
+                        "nombre": "InscripcionService",
+                        "metodos": [
+                          {
+                            "nombre": "inscribirUsuario",
+                            "descripcion": "Inscribe un usuario en un curso y almacena la dirección de envío.",
+                            "parametros": [
+                              { "tipo": "Long", "nombre": "idUsuario", "descripcion": "ID del usuario a inscribir" },
+                              { "tipo": "Long", "nombre": "idCurso", "descripcion": "ID del curso destino" },
+                              { "tipo": "Custom...", "custom": "DireccionEnvio", "nombre": "direccionEnvio", "descripcion": "Dirección de envío del material", "propiedades": [
+                                  { "tipo": "String", "nombre": "calle", "descripcion": "Calle principal" },
+                                  { "tipo": "String", "nombre": "ciudad", "descripcion": "Ciudad" },
+                                  { "tipo": "String", "nombre": "codigoPostal", "descripcion": "Código postal" },
+                                  { "tipo": "Custom...", "custom": "Pais", "nombre": "pais", "descripcion": "País de residencia", "propiedades": [
+                                      { "tipo": "String", "nombre": "nombre", "descripcion": "Nombre del país" },
+                                      { "tipo": "String", "nombre": "codigo", "descripcion": "Código ISO" },
+                                      { "tipo": "Custom...", "custom": "Region", "nombre": "region", "descripcion": "Región geográfica", "propiedades": [
+                                          { "tipo": "String", "nombre": "nombreRegion", "descripcion": "Nombre de la región" },
+                                          { "tipo": "String", "nombre": "codigoRegion", "descripcion": "Código de la región" }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "salida": { "tipo": "Custom...", "custom": "ResultadoInscripcion", "descripcion": "Resultado detallado de la inscripción", "propiedades": [
+                                { "tipo": "boolean", "nombre": "exito", "descripcion": "Si la inscripción fue exitosa" },
+                                { "tipo": "String", "nombre": "mensaje", "descripcion": "Mensaje para el usuario" },
+                                { "tipo": "Long", "nombre": "idInscripcion", "descripcion": "ID generado para la inscripción" }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "nombre": "CorreoService",
+                        "metodos": [
+                          {
+                            "nombre": "enviarCorreoInscripcion",
+                            "descripcion": "Envía un correo de confirmación de inscripción.",
+                            "parametros": [
+                              { "tipo": "String", "nombre": "email", "descripcion": "Correo del usuario" },
+                              { "tipo": "String", "nombre": "nombreCurso", "descripcion": "Nombre del curso" },
+                              { "tipo": "Custom...", "custom": "ArchivoAdjunto", "nombre": "adjunto", "descripcion": "Permite especificar un archivo adjunto", "propiedades": [
+                                  { "tipo": "String", "nombre": "nombreArchivo", "descripcion": "Especifica el nombre del archivo con su extensión" },
+                                  { "tipo": "Object", "nombre": "data", "descripcion": "Array de bytes" }
+                                ]
+                              }
+                            ],
+                            "salida": { "tipo": "void", "descripcion": "No retorna valor" }
+                          }
+                        ]
+                      }
+                    ],
+                    "patrones": "Service, Repository",
+                    "diagrama": "El InscripcionService valida usuario y curso, guarda la inscripción y llama a CorreoService.",
+                    "notas": "Se usará Spring Boot para la inyección de dependencias. El envío de correo es asíncrono."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "FUNC-1-2",
+          "nombre": "Seguimiento de Progreso y Gamificación",
+          "namespace": "com.empresa.cursos.progreso",
+          "actor": "Estudiante, Gerente de Equipo",
+          "impacto": "Mantener a los usuarios motivados y comprometidos, proporcionando visibilidad clara de su avance y reconociendo sus logros.",
+          "tags": "progreso, gamificacion, dashboard, reportes",
+          "estado": "En análisis",
+          "responsable": "Equipo Fullstack",
+          "notas": "Esta funcionalidad es crucial para la retención y el engagement. Considerar la performance al calcular el progreso de muchos usuarios.",
+          "enlace_doc": "https://miempresa.com/docs/progreso",
+          "background": "Dado que el usuario está autenticado en la plataforma",
+          "historias": [
+            {
+              "id": "HIST-1-2-1",
+              "descripcion": "Como estudiante, quiero ver un dashboard personal con el porcentaje de avance de cada uno de mis cursos, para poder gestionar mi aprendizaje y mantenerme motivado.",
+              "package": "internal.query.verdashboardestudiante",
+              "dependencias": "FUNC-1-1",
+              "estado": "En análisis",
+              "responsable": "Analista de UX/UI",
+              "notas": "El dashboard debe ser la página de inicio para el estudiante.",
+              "criterios": [
+                {
+                  "comentario": "Visualización del progreso en el dashboard personal.",
+                  "tags": "@dashboard @progreso",
+                  "titulo": "Visualizar dashboard con cursos en progreso",
+                  "estado": "Pendiente",
+                  "notas": "",
+                  "given": "Given que soy un estudiante inscrito en 2 cursos, 'Introducción a Java' al 50% y 'Bases de Datos SQL' al 10%",
+                  "when": "When accedo a mi dashboard personal",
+                  "then": "Then veo una tarjeta para 'Introducción a Java' con una barra de progreso al 50%\nAnd veo una tarjeta para 'Bases de Datos SQL' con una barra de progreso al 10%",
+                  "clases_unitarias": {
+                    "contexto": "CuandoElEstudianteConsultaSuDashboard.java",
+                    "especificacion": [
+                      "debeRetornarTodosLosCursosInscritosConSuProgreso"
+                    ]
+                  },
+                  "diseno_tecnico": {
+                    "clases": [
+                      {
+                        "nombre": "DashboardQueryService",
+                        "metodos": [
+                          {
+                            "nombre": "obtenerDatosDashboard",
+                            "descripcion": "Recupera los datos de progreso de los cursos para el dashboard de un usuario.",
+                            "parametros": [
+                              { "tipo": "Long", "nombre": "idUsuario", "descripcion": "ID del usuario logueado" }
+                            ],
+                            "salida": { "tipo": "Custom...", "custom": "DashboardDTO", "descripcion": "Objeto con la información para el dashboard", "propiedades": [
+                                { "tipo": "List", "nombre": "cursosEnProgreso", "descripcion": "Lista de DTOs de cursos" }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "patrones": "Query, DTO, Service",
+                    "diagrama": "El Frontend llama a un endpoint que es manejado por DashboardQueryService para obtener los datos.",
+                    "notas": "Cachear los resultados del dashboard por 5 minutos para mejorar la performance."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "FUNC-1-3",
+          "nombre": "Notificaciones y Recordatorios Inteligentes",
+          "namespace": "com.empresa.cursos.notificaciones",
+          "actor": "Estudiante",
+          "impacto": "Reducir la tasa de abandono de cursos mediante recordatorios oportunos y comunicación relevante, ayudando a los usuarios a mantenerse al día.",
+          "tags": "notificaciones, email, recordatorios, engagement",
+          "estado": "En análisis",
+          "responsable": "Equipo de Plataforma",
+          "notas": "Se debe integrar con un servicio de email (ej. SendGrid, AWS SES). Considerar la opción de notificaciones push en el futuro.",
+          "enlace_doc": "https://miempresa.com/docs/notificaciones",
+          "background": "Dado que el usuario ha aceptado recibir notificaciones",
+          "historias": [
+            {
+              "id": "HIST-1-3-1",
+              "descripcion": "Como estudiante, quiero recibir una notificación por correo electrónico si no he ingresado a un curso en los últimos 7 días, para recordar que debo continuar con mi formación.",
+              "package": "internal.job.enviarrecordatorioinactividad",
+              "dependencias": "",
+              "estado": "En análisis",
+              "responsable": "Desarrollador Backend",
+              "notas": "Este proceso debe ser un trabajo programado (cron job) que se ejecute diariamente.",
+              "criterios": [
+                {
+                  "comentario": "Envío de recordatorio por inactividad.",
+                  "tags": "@recordatorio @job @email",
+                  "titulo": "Enviar correo por inactividad prolongada",
+                  "estado": "Pendiente",
+                  "notas": "",
+                  "given": "Given que un estudiante no ha accedido a su curso 'Scrum Avanzado' desde hace 7 días",
+                  "when": "When el trabajo programado de recordatorios se ejecuta",
+                  "then": "Then se envía un correo de recordatorio a la dirección del estudiante mencionando el curso 'Scrum Avanzado'",
+                  "clases_unitarias": {
+                    "contexto": "CuandoSeEjecutaElJobDeRecordatorios.java",
+                    "especificacion": [
+                      "debeIdentificarUsuariosInactivosCorrectamente",
+                      "debeDispararElEnvioDeCorreoParaCadaUsuarioInactivo"
+                    ]
+                  },
+                  "diseno_tecnico": {
+                    "clases": [
+                      {
+                        "nombre": "RecordatorioJob",
+                        "metodos": [
+                          {
+                            "nombre": "ejecutarBusquedaYEnvio",
+                            "descripcion": "Busca usuarios inactivos y coordina el envío de correos.",
+                            "parametros": [],
+                            "salida": { "tipo": "void", "descripcion": "No retorna valor" }
+                          }
+                        ]
+                      }
+                    ],
+                    "patrones": "Scheduled Job, Batch Processing",
+                    "diagrama": "Un Scheduler (ej. Spring @Scheduled) ejecuta el RecordatorioJob, que consulta la base de datos y llama a un servicio de correo.",
+                    "notas": "El job debe tener logs detallados de cuántos correos se enviaron y si hubo errores."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "FUNC-1-4",
+          "nombre": "Generación de Certificados y Reconocimiento Social",
+          "namespace": "com.empresa.cursos.certificaciones",
+          "actor": "Estudiante, Administrador",
+          "impacto": "Proveer una recompensa tangible y verificable al finalizar un curso, incentivando al usuario a completar el 100% del contenido y permitiéndole compartir su logro.",
+          "tags": "certificados, pdf, linkedin, recompensa",
+          "estado": "En análisis",
+          "responsable": "Equipo Backend",
+          "notas": "La generación de PDF puede ser intensiva en recursos. Considerar una librería como iText o un servicio externo. La integración con LinkedIn requiere una API key.",
+          "enlace_doc": "https://miempresa.com/docs/certificados",
+          "background": "Dado que el usuario ha completado el 100% de un curso",
+          "historias": [
+            {
+              "id": "HIST-1-4-1",
+              "descripcion": "Como estudiante, una vez que haya completado todos los módulos y aprobado la evaluación final de un curso, quiero recibir automáticamente un certificado digital en formato PDF.",
+              "package": "internal.command.generarcertificado",
+              "dependencias": "FUNC-1-2",
+              "estado": "En análisis",
+              "responsable": "Desarrollador Backend",
+              "notas": "El certificado debe incluir nombre del estudiante, nombre del curso, fecha de finalización y un ID de verificación.",
+              "criterios": [
+                {
+                  "comentario": "Generación del certificado en PDF al finalizar.",
+                  "tags": "@certificado @pdf",
+                  "titulo": "Generar PDF de certificado al completar curso",
+                  "estado": "Pendiente",
+                  "notas": "",
+                  "given": "Given que un estudiante ha completado el 100% de los módulos y ha aprobado el examen final del curso 'Gestión de Proyectos'",
+                  "when": "When el sistema procesa el evento de finalización del curso",
+                  "then": "Then se genera un certificado en PDF con su nombre, el nombre del curso 'Gestión de Proyectos' y la fecha actual\nAnd el certificado está disponible para su descarga en el dashboard del estudiante",
+                  "clases_unitarias": {
+                    "contexto": "CuandoUnEstudianteCompletaUnCurso.java",
+                    "especificacion": [
+                      "debeInvocarElServicioDeGeneracionDeCertificados"
+                    ]
+                  },
+                  "diseno_tecnico": {
+                    "clases": [
+                      {
+                        "nombre": "CertificadoService",
+                        "metodos": [
+                          {
+                            "nombre": "generarCertificadoParaUsuario",
+                            "descripcion": "Crea el archivo PDF del certificado a partir de una plantilla.",
+                            "parametros": [
+                              { "tipo": "Long", "nombre": "idUsuario", "descripcion": "ID del estudiante" },
+                              { "tipo": "Long", "nombre": "idCurso", "descripcion": "ID del curso finalizado" }
+                            ],
+                            "salida": { "tipo": "Custom...", "custom": "CertificadoGenerado", "descripcion": "Objeto con los datos del PDF generado", "propiedades": [
+                                { "tipo": "String", "nombre": "urlDescarga", "descripcion": "URL para descargar el PDF" },
+                                { "tipo": "String", "nombre": "idVerificacion", "descripcion": "Código único para verificar la autenticidad" }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "patrones": "Service, Template Method (para las plantillas de PDF)",
+                    "diagrama": "Un evento de 'CursoFinalizado' dispara la llamada a CertificadoService, que usa una librería de PDF para crear el archivo y guardarlo en un storage (ej. S3).",
+                    "notas": ""
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
