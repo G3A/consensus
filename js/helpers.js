@@ -1,5 +1,4 @@
 import { ayudas } from './ayudas.js';
-import { demoGestionConocimientos, demoInventarios, cargarDemoDesdeJson } from './demos.js';
 
 export function mostrarModalAyuda(titulo) {
   const mensaje = ayudas[titulo] || 'No se ha definido ayuda para esta sección.';
@@ -11,16 +10,6 @@ export function mostrarModalAyuda(titulo) {
 export function cerrarModalAyuda() {
   document.getElementById('modalAyuda').style.display = 'none';
 }
-
-export function limpiarTodo() {
-  if (!confirm("¿Seguro que deseas limpiar todo? Se perderán los cambios no guardados.")) return;
-  vision = "";
-  objetivos = [];
-  document.getElementById("visionGeneral").value = "";
-  document.getElementById("fileName").textContent = "";
-  renderObjetivos();
-}
-
 
 export function cleanFileName(str) {
   return (str || '')

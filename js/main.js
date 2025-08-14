@@ -6,12 +6,12 @@ import { renderObjetivos,
 		 renderDisenoTecnicoCriterio} from './render.js';
 import { mostrarModalAyuda,
          cerrarModalAyuda,
-         limpiarTodo,
          javaPackage,
          javaClassName, 
          toggleSection,
          cleanFileName,
          toCamelCaseStep} from './helpers.js';
+import { demoGestionConocimientos, demoInventarios, cargarDemoDesdeJson } from './demos.js';         
 //import { agregarObjetivo } from './agregarSeccion.js';
 
 // Variables globales
@@ -21,7 +21,14 @@ let objetivos = [];
 // Asigna funciones globales para los onclick del HTML
 window.mostrarModalAyuda = mostrarModalAyuda;
 window.cerrarModalAyuda = cerrarModalAyuda;
-window.limpiarTodo = limpiarTodo;
+window.limpiarTodo = function limpiarTodo() {
+  if (!confirm("¿Seguro que deseas limpiar todo? Se perderán los cambios no guardados.")) return;
+  vision = "";
+  objetivos = [];
+  document.getElementById("visionGeneral").value = "";
+  document.getElementById("fileName").textContent = "";
+  renderObjetivos(vision,objetivos);
+};
 window.toggleSection = toggleSection;
 window.cargarDemoSeleccionado = function cargarDemoSeleccionado() {
   const demo = document.getElementById("demoSelector").value;

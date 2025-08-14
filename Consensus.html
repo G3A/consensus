@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Generador Avanzado de Features Gherkin</title>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/tour-library/tour.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script type="module" src="js/main.js"></script>
 </head>
@@ -35,7 +36,7 @@
       🌟 Visión
       <span class="tooltip-icon" onclick="mostrarModalAyuda('Visión')">❓</span>
     </label>
-    <input id="visionGeneral" placeholder="Ej: Ser la plataforma líder en educación digital personalizada..." />
+    <input id="visionGeneral" placeholder="Ej: Ser la plataforma líder en educación digital personalizada..." data-tour-step="1" />
     <div id="objetivos"></div>
     <button onclick="agregarObjetivo()">➕ Añadir Objetivo de Negocio</button>
     <div class="output" id="previsualizacion" style="display: none;">
@@ -43,6 +44,7 @@
       <div id="previewContent"></div>
     </div>
   </div>
+  
   <!-- Modal de Ayuda -->
   <div id="modalAyuda" style="display: none;">
     <div class="modal-overlay" onclick="cerrarModalAyuda()"></div>
@@ -52,6 +54,30 @@
       <button onclick="cerrarModalAyuda()">Cerrar</button>
     </div>
   </div>
+
+  <!-- Botón para iniciar el tour -->
+  <button id="startTour" class="btn-tour">🎯 Tour Interactivo</button>
   
+  <!-- Tooltip del tour -->
+  <div id="tourTooltip" class="tour-tooltip">
+    <div class="tour-header">
+      <span class="tour-step-counter"></span>
+      <button class="tour-close">×</button>
+    </div>
+    <div class="tour-content">
+      <h3 class="tour-title"></h3>
+      <p class="tour-description"></p>
+    </div>
+    <div class="tour-footer">
+      <button class="tour-btn tour-prev">Anterior</button>
+      <button class="tour-btn tour-next">Siguiente</button>
+      <button class="tour-btn tour-finish">Finalizar</button>
+    </div>
+  </div>
+
+  <script src="js/tour-library/tour.js"></script>
+  <script src="js/tour-library/tour-advanced.js"></script>
+  <script src="js/consensus-tour-validation.js"></script>
+  <script src="js/consensus-tour.js"></script>
 </body>
 </html>
