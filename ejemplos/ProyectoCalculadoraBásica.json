@@ -1,0 +1,233 @@
+{
+  "vision": "Proveer una calculadora capaz de realizar operaciones básicas encadenadas y manejar errores aritméticos correctamente.",
+  "objetivos_de_negocio": [
+    {
+      "id": "OBJ-CALC-002",
+      "descripcion": "Facilitar cálculos matemáticos encadenados y robustos para usuarios sin conocimientos técnicos.",
+      "kpi": "100% operaciones básicas cubiertas y errores controlados",
+      "prioridad": "Alta",
+      "responsable": "Product Manager",
+      "estado": "Diseñado",
+      "funcionalidades": [
+        {
+          "id": "FUNC-CALC-002",
+          "nombre": "Operaciones Matemáticas Encadenables",
+          "namespace": "com.empresa.calculadora",
+          "actor": "Usuario de la aplicación",
+          "impacto": "Permite al usuario ejecutar operaciones básicas correctamente y controlar errores críticos.",
+          "tags": "suma, resta, multiplicacion, division, potencia, raiz, reset, error",
+          "estado": "Diseñado",
+          "responsable": "Equipo Backend",
+          "enlace_doc": "https://miempresa.com/docs/calculadora",
+          "background": "Dado que tengo una calculadora nueva",
+          "historias": [
+            {
+              "id": "HIST-CALC-002",
+              "descripcion": "Como usuario, quiero realizar operaciones encadenadas con manejo de errores para usar la calculadora con confianza.",
+              "package": "internal.command.calculadoraoperaciones",
+              "responsable": "Analista BDD",
+              "estado": "Diseñado",
+              "criterios": [
+                {
+                  "titulo": "Valor inicial es cero",
+                  "estado": "Aprobado",
+                  "tags": "@inicio @baseline",
+                  "comentario": "El valor inicial de una calculadora nueva debe ser cero.",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "",
+                  "then": "Entonces el resultado debe ser 0",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_el_valor_inicial_debe_ser_cero"]
+                  }
+                },
+                {
+                  "titulo": "Sumar varios casos",
+                  "tags": "@suma @parametrizado @happyPath",
+                  "estado": "Aprobado",
+                  "comentario": "Valida suma con casos positivos, negativos y decimales.",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en <valor_inicial> y sumo <sumando>",
+                  "then": "Entonces el resultado debe ser <resultado>",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_la_suma_debe_ser_correcta"]
+                  }
+                },
+                {
+                  "titulo": "Overflow suma",
+                  "tags": "@suma @error @overflow",
+                  "estado": "Aprobado",
+                  "comentario": "El sistema debe detectar overflow aritmético.",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en Double.MAX_VALUE y sumo Double.MAX_VALUE",
+                  "then": "Entonces debe producirse un error con mensaje \"Overflow: resultado fuera de rango\"",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_debe_manejar_overflow"]
+                  }
+                },
+                {
+                  "titulo": "Restas parametrizadas",
+                  "tags": "@resta @parametrizado @happyPath",
+                  "estado": "Aprobado",
+                  "comentario": "Valida operación resta en distintos escenarios.",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en <valor_inicial> y resto <sustraendo>",
+                  "then": "Entonces el resultado debe ser <resultado>",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_la_resta_debe_ser_correcta"]
+                  }
+                },
+                {
+                  "titulo": "Multiplicaciones varias",
+                  "tags": "@multiplicacion @parametrizado",
+                  "estado": "Aprobado",
+                  "comentario": "Soporta multiplicación por cero, negativos y decimales.",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en <valor_inicial> y multiplico por <multiplicador>",
+                  "then": "Entonces el resultado debe ser <resultado>",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_la_multiplicación_debe_ser_correcta"]
+                  }
+                },
+                {
+                  "titulo": "Divisiones válidas",
+                  "tags": "@division @happyPath",
+                  "estado": "Aprobado",
+                  "comentario": "Casos de división con valores válidos.",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en <valor_inicial> y divido entre <divisor>",
+                  "then": "Entonces el resultado debe ser <resultado>",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_la_división_debe_ser_correcta"]
+                  }
+                },
+                {
+                  "titulo": "División por cero",
+                  "tags": "@division @error",
+                  "estado": "Aprobado",
+                  "comentario": "Error al dividir entre cero",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en 10 y divido entre 0",
+                  "then": "Entonces debe producirse un error con mensaje \"División por cero no permitida\"",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_dividir_por_cero_debe_generar_error"]
+                  }
+                },
+                {
+                  "titulo": "Potencias válidas (parametrizado)",
+                  "tags": "@potencia @happyPath",
+                  "estado": "Aprobado",
+                  "comentario": "Casos variados de potencias válidas.",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en <base> y elevo a la potencia <exponente>",
+                  "then": "Entonces el resultado debe ser <resultado>",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_la_potencia_debe_ser_correcta"]
+                  }
+                },
+                {
+                  "titulo": "Cero a potencia negativa",
+                  "tags": "@potencia @error",
+                  "estado": "Aprobado",
+                  "comentario": "0 elevado a exponente negativo genera error.",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en 0 y elevo a la potencia -2",
+                  "then": "Entonces debe producirse un error con mensaje \"0 elevado a potencia negativa es indefinido\"",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_cero_elevado_a_negativo_debe_generar_error"]
+                  }
+                },
+                {
+                  "titulo": "Raíces cuadradas válidas",
+                  "tags": "@raiz @happyPath",
+                  "estado": "Aprobado",
+                  "comentario": "Cálculo válido de raíz cuadrada.",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en <numero> y calculo la raíz cuadrada",
+                  "then": "Entonces el resultado debe ser <resultado>",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_la_raíz_cuadrada_debe_ser_correcta"]
+                  }
+                },
+                {
+                  "titulo": "Raíz de negativo",
+                  "tags": "@raiz @error",
+                  "estado": "Aprobado",
+                  "comentario": "Raíz de número negativo genera error.",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en -4 y calculo la raíz cuadrada",
+                  "then": "Entonces debe producirse un error con mensaje \"Raíz cuadrada de número negativo no permitida\"",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_raíz_de_negativo_debe_generar_error"]
+                  }
+                },
+                {
+                  "titulo": "Operaciones encadenadas complejas",
+                  "tags": "@encadenado @happyPath",
+                  "estado": "Aprobado",
+                  "comentario": "Prueba de cálculo compuesto multietapa",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en 5 y sumo 3 y multiplico por 2 y resto 4",
+                  "then": "Entonces el resultado debe ser 12",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_debe_calcular_operaciones_complejas"]
+                  }
+                },
+                {
+                  "titulo": "Error detiene operaciones encadenadas",
+                  "tags": "@encadenado @error",
+                  "estado": "Aprobado",
+                  "comentario": "Detecta error y detiene operaciones siguientes",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en 10 y divido entre 0 y sumo 5 y multiplico por 2",
+                  "then": "Entonces debe producirse un error con mensaje \"División por cero no permitida\"",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_debe_detener_al_encontrar_error"]
+                  }
+                },
+                {
+                  "titulo": "Reset después de operaciones",
+                  "tags": "@reset @happyPath",
+                  "estado": "Aprobado",
+                  "comentario": "Reinicio tras operaciones exitosas",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando establezco el valor en 100 y sumo 50 y reseteo la calculadora",
+                  "then": "Entonces el resultado debe ser 0",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_debe_volver_al_estado_inicial"]
+                  }
+                },
+                {
+                  "titulo": "Reset después de error",
+                  "tags": "@reset @error",
+                  "estado": "Aprobado",
+                  "comentario": "Limpieza del estado tras error crítico",
+                  "given": "Dado que tengo una calculadora nueva",
+                  "when": "Cuando divido entre 0 y reseteo la calculadora",
+                  "then": "Entonces el resultado debe ser 0 y no debe haber errores",
+                  "clases_unitarias": {
+                    "contexto": "CalculadoraSpecTest.java",
+                    "especificacion": ["entonces_debe_limpiar_errores"]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -3,66 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Generador Avanzado de Features Gherkin</title>
-  <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      background: #fff;
-      padding: 30px;
-      max-width: 1000px;
-      margin: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-    h1 { text-align: center; color: #003366; }
-    label { font-weight: bold; margin-top: 15px; display: flex; align-items: center; }
-    input, textarea, select {
-      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;
-      margin-top: 5px; margin-bottom: 15px; box-sizing: border-box;
-    }
-    button, .file-label {
-      padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;
-      background: #007bff; color: #fff; margin-right: 5px;
-      display: inline-flex; align-items: center;
-    }
-    button:hover, .file-label:hover { background: #0056b3; }
-    .section {
-      background: #f8f9fa; padding: 15px; border-left: 4px solid #007bff;
-      margin-bottom: 25px; border-radius: 4px; position: relative;
-    }
-    .objetivo-section { border-left: 4px solid #28a745; background: #f6fff6; }
-    .output pre {
-      background: #f4f6f8; border-radius: 6px; padding: 15px; font-size: 15px; overflow-x: auto;
-    }
-    .borrar-btn, .expand-btn {
-      background: #dc3545; color: #fff; border-radius: 3px; font-size: 13px; margin-left: 10px;
-      padding: 2px 8px; border: none; cursor: pointer;
-    }
-    .expand-btn { background: #007bff; }
-    .expand-btn[aria-expanded="true"] { background: #0056b3; }
-    .borrar-btn:hover { background: #b52a37; }
-    .tooltip-icon { margin-left: 5px; color: #007bff; cursor: pointer; font-size: 1.1em; }
-    /* Modal */
-    #modalAyuda { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
-    .modal-overlay { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-    .modal-content {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      background: #fff; max-width: 600px; width: 90%; padding: 30px 20px; border-radius: 8px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 10000;
-    }
-    .modal-content h2 { margin-top: 0; font-size: 22px; color: #003366; }
-    .modal-pre { white-space: pre-wrap; font-size: 15px; line-height: 1.6; color: #333; max-height: 400px; overflow-y: auto; margin-bottom: 20px; }
-    input:focus, textarea:focus, select:focus { outline: 2px solid #007bff; box-shadow: 0 0 2px #007bff; }
-    /* Responsive */
-    @media (max-width: 600px) {
-      .container { padding: 10px; }
-      input, textarea, select { font-size: 15px; }
-    }
-  </style>
+  <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script type="module" src="js/main.js"></script>
 </head>

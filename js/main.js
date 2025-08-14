@@ -4,8 +4,14 @@ import { renderObjetivos,
 		 renderCriterioBasico,
 		 renderPruebasUnitarias,
 		 renderDisenoTecnicoCriterio} from './render.js';
-import { demoGestionConocimientos, demoInventarios, cargarDemoDesdeJson } from './demos.js';
-import { mostrarModalAyuda, cerrarModalAyuda, limpiarTodo } from './helpers.js';
+import { mostrarModalAyuda,
+         cerrarModalAyuda,
+         limpiarTodo,
+         javaPackage,
+         javaClassName, 
+         toggleSection,
+         cleanFileName,
+         toCamelCaseStep} from './helpers.js';
 //import { agregarObjetivo } from './agregarSeccion.js';
 
 // Variables globales
@@ -15,17 +21,9 @@ let objetivos = [];
 // Asigna funciones globales para los onclick del HTML
 window.mostrarModalAyuda = mostrarModalAyuda;
 window.cerrarModalAyuda = cerrarModalAyuda;
-window.limpiarTodo = () => function limpiarTodo() {
-  if (!confirm("¿Seguro que deseas limpiar todo? Se perderán los cambios no guardados.")) return;
-  vision = "";
-  objetivos = [];
-  document.getElementById("visionGeneral").value = "";
-  document.getElementById("fileName").textContent = "";
-  renderObjetivos();
-}
-
-// Demo selector
-window.cargarDemoSeleccionado = function() {
+window.limpiarTodo = limpiarTodo;
+window.toggleSection = toggleSection;
+window.cargarDemoSeleccionado = function cargarDemoSeleccionado() {
   const demo = document.getElementById("demoSelector").value;
   if (!demo) return;
   if (!confirm("¿Seguro que deseas cargar este demo? Se perderán los cambios no guardados.")) {
@@ -36,6 +34,22 @@ window.cargarDemoSeleccionado = function() {
   if (demo === "inventarios") cargarDemoDesdeJson(demoInventarios, v => vision = v, o => objetivos = o, () => renderObjetivos(vision, objetivos));
   document.getElementById("demoSelector").value = "";
 };
+window.cargarTrabajo = function cargarTrabajo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = JSON.parse(e.target.result);
+    vision = data.vision || '';
+    document.getElementById("visionGeneral").value = vision;
+    // REEMPLAZA el array, no lo sumes
+    objetivos = Array.isArray(data.objetivos_de_negocio) ? data.objetivos_de_negocio : [];
+    renderObjetivos(vision,objetivos);
+  };
+  reader.readAsText(file);
+}
+
+
 
 // Inicializa la app
 window.onload = () => {
@@ -201,33 +215,8 @@ window.borrarClaseUnitaria= function borrarClaseUnitaria(btn) {
   btn.parentNode.remove();
 }
 
-window.cargarTrabajo=function cargarTrabajo(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const data = JSON.parse(e.target.result);
-    vision = data.vision || '';
-    document.getElementById("visionGeneral").value = vision;
-    // REEMPLAZA el array, no lo sumes
-    objetivos = Array.isArray(data.objetivos_de_negocio) ? data.objetivos_de_negocio : [];
-    renderObjetivos(vision,objetivos);
-  };
-  reader.readAsText(file);
-}
 
-window.toggleSection= function toggleSection(btn, bodyId) {
-  const body = document.getElementById(bodyId);
-  if (body.style.display === "none") {
-    body.style.display = "";
-    btn.textContent = "▼";
-    btn.setAttribute("aria-expanded", "true");
-  } else {
-    body.style.display = "none";
-    btn.textContent = "►";
-    btn.setAttribute("aria-expanded", "false");
-  }
-}
+
 
 window.verPrevisualizacion=function verPrevisualizacion() {
   actualizarDatosDesdeDOM();
@@ -501,15 +490,7 @@ window.descargarFeatures=function descargarFeatures() {
 }
 
 
-window.cleanFileName=function cleanFileName(str) {
-  return (str || '')
-    .toString()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-zA-Z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '')
-    .replace(/_+/g, '_')
-    .toLowerCase();
-}
+
 
 window.guardarTrabajo=function guardarTrabajo() {
   actualizarDatosDesdeDOM();
@@ -669,45 +650,6 @@ window.descargarEspecificacionTecnicaZip=function descargarEspecificacionTecnica
   });
 }
 
-
-window.javaPackage=function javaPackage(str) {
-  // Convierte a minúsculas y puntos
-  return (str || "")
-    .replace(/[^a-zA-Z0-9]+/g, ".")
-    .replace(/^\.+|\.+$/g, "")
-    .replace(/\.+/g, ".")
-    .toLowerCase();
-}
-
-window.javaClassName=function javaClassName(str) {
-  // Convierte a PascalCase y quita .java si lo tiene
-  return (str || "")
-    .replace(/\.java$/i, "")
-    .replace(/(^|_|\s|-)(\w)/g, (_, __, c) => c ? c.toUpperCase() : "")
-    .replace(/[^a-zA-Z0-9]/g, "");
-}
-
-window.toCamelCaseStep=function toCamelCaseStep(prefix, text) {
-  // Quita palabras Gherkin y espacios extra
-  let clean = text.trim()
-    .replace(/^(Given|When|Then|And|Y|Pero)\s+/i, '')
-    .replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ ]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  // Elimina acentos y reemplaza ñ/Ñ por nn/NN
-  clean = clean.normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, '') // quita acentos
-    .replace(/ñ/g, 'nn')
-    .replace(/Ñ/g, 'NN');
-
-  let words = clean.split(' ');
-  let camel = words.map((w, i) => {
-    if (i === 0) return w.charAt(0).toLowerCase() + w.slice(1);
-    return w.charAt(0).toUpperCase() + w.slice(1);
-  }).join('');
-  return prefix + camel.charAt(0).toUpperCase() + camel.slice(1);
-}
 
 window.filtrarBusqueda = function filtrarBusqueda() {
     // 1. Obtener el texto del buscador y normalizarlo (minúsculas, sin espacios extra).

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consensus - Tour Interactivo</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="tour.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Formulario de Consenso</h1>
+        
+        <form id="consensusForm">
+            <div class="form-group" data-tour-step="1">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control">
+            </div>
+
+            <div class="form-group" data-tour-step="2">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control">
+            </div>
+
+            <div class="form-group" data-tour-step="3">
+                <label for="propuesta">Propuesta:</label>
+                <textarea id="propuesta" name="propuesta" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group" data-tour-step="4">
+                <label for="prioridad">Prioridad:</label>
+                <select id="prioridad" name="prioridad" class="form-control">
+                    <option value="">Seleccione...</option>
+                    <option value="alta">Alta</option>
+                    <option value="media">Media</option>
+                    <option value="baja">Baja</option>
+                </select>
+            </div>
+
+            <div class="form-group" data-tour-step="5">
+                <label for="fecha">Fecha de implementación:</label>
+                <input type="date" id="fecha" name="fecha" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+
+        <!-- Botón para iniciar el tour -->
+        <button id="startTour" class="btn-tour">Iniciar Tour Interactivo</button>
+    </div>
+
+    <!-- Overlay del tour -->
+    <div id="tourOverlay" class="tour-overlay"></div>
+    
+    <!-- Tooltip del tour -->
+    <div id="tourTooltip" class="tour-tooltip">
+        <div class="tour-header">
+            <span class="tour-step-counter"></span>
+            <button class="tour-close">×</button>
+        </div>
+        <div class="tour-content">
+            <h3 class="tour-title"></h3>
+            <p class="tour-description"></p>
+        </div>
+        <div class="tour-footer">
+            <button class="tour-btn tour-prev">Anterior</button>
+            <button class="tour-btn tour-next">Siguiente</button>
+            <button class="tour-btn tour-finish">Finalizar</button>
+        </div>
+    </div>
+
+    <script src="tour.js"></script>
+    <script src="tour-advanced.js"></script>
+    <script src="tour-validation.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

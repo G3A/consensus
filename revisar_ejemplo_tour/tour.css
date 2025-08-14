@@ -1,0 +1,358 @@
+/* Overlay del tour */
+.tour-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.tour-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Tooltip del tour */
+.tour-tooltip {
+    position: fixed;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    max-width: 400px;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.9);
+    transition: all 0.3s;
+}
+
+.tour-tooltip.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+/* Header del tooltip */
+.tour-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tour-step-counter {
+    font-size: 12px;
+    color: #666;
+    font-weight: 600;
+}
+
+.tour-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.tour-close:hover {
+    color: #333;
+}
+
+/* Contenido del tooltip */
+.tour-content {
+    margin-bottom: 20px;
+}
+
+.tour-title {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.tour-description {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #666;
+}
+
+/* Footer del tooltip */
+.tour-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+/* Botones del tour */
+.tour-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.tour-prev {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.tour-prev:hover {
+    background: #e0e0e0;
+}
+
+.tour-next,
+.tour-finish {
+    background: #007bff;
+    color: white;
+}
+
+.tour-next:hover,
+.tour-finish:hover {
+    background: #0056b3;
+}
+
+/* Highlight de elementos */
+.tour-highlight {
+    position: relative;
+    z-index: 9997;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.3);
+    border-radius: 4px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(0, 123, 255, 0.1);
+    }
+    100% {
+        box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.3);
+    }
+}
+
+/* Botón para iniciar el tour */
+.btn-tour {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s;
+    z-index: 1000;
+}
+
+.btn-tour:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+/* Barra de progreso del tour */
+.tour-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 10001;
+}
+
+.tour-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transition: width 0.3s ease;
+}
+
+.tour-progress-text {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Feedback de validación */
+.validation-feedback {
+    margin-top: 5px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    animation: fadeIn 0.3s;
+}
+
+.validation-feedback.valid {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.validation-feedback.invalid {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Notificaciones del tour */
+.tour-notification {
+    position: fixed;
+    top: 20px;
+    right: -300px;
+    padding: 15px 20px;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    transition: right 0.3s ease;
+    z-index: 10002;
+    min-width: 250px;
+}
+
+.tour-notification.show {
+    right: 20px;
+}
+
+.tour-notification-success {
+    background: #28a745;
+}
+
+.tour-notification-error {
+    background: #dc3545;
+}
+
+.tour-notification-info {
+    background: #17a2b8;
+}
+
+/* Indicadores de teclado */
+.keyboard-hint {
+    position: fixed;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    z-index: 10000;
+    animation: slideUp 0.3s ease;
+}
+
+.keyboard-hint kbd {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin: 0 2px;
+}
+
+/* Mensaje de completación */
+.completion-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 10000;
+    animation: slideIn 0.3s ease-out;
+}
+
+.completion-message h3 {
+    color: #28a745;
+    margin: 0 0 10px 0;
+}
+
+.btn-close-message {
+    margin-top: 15px;
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-close-message:hover {
+    background: #0056b3;
+}
+
+/* Efectos adicionales */
+.pulse-effect {
+    animation: pulseEffect 1s;
+}
+
+@keyframes pulseEffect {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.shake-effect {
+    animation: shakeEffect 0.5s;
+}
+
+@keyframes shakeEffect {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
