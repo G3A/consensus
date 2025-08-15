@@ -7,7 +7,8 @@
       "kpi": "100% operaciones básicas cubiertas y errores controlados",
       "prioridad": "Alta",
       "responsable": "Product Manager",
-      "estado": "Diseñado",
+      "estado": "En desarrollo",
+	  "notas": "prueba",
       "funcionalidades": [
         {
           "id": "FUNC-CALC-002",
@@ -16,8 +17,9 @@
           "actor": "Usuario de la aplicación",
           "impacto": "Permite al usuario ejecutar operaciones básicas correctamente y controlar errores críticos.",
           "tags": "suma, resta, multiplicacion, division, potencia, raiz, reset, error",
-          "estado": "Diseñado",
+          "estado": "En desarrollo",
           "responsable": "Equipo Backend",
+		  "notas": "prueba",
           "enlace_doc": "https://miempresa.com/docs/calculadora",
           "background": "Dado que tengo una calculadora nueva",
           "historias": [
@@ -25,16 +27,19 @@
               "id": "HIST-CALC-002",
               "descripcion": "Como usuario, quiero realizar operaciones encadenadas con manejo de errores para usar la calculadora con confianza.",
               "package": "internal.command.calculadoraoperaciones",
+			  "dependencias": "HIST-CALC-000,HIST-CALC-001",
               "responsable": "Analista BDD",
-              "estado": "Diseñado",
+              "estado": "En desarrollo",
+			  "notas": "prueba",
               "criterios": [
                 {
                   "titulo": "Valor inicial es cero",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "tags": "@inicio @baseline",
                   "comentario": "El valor inicial de una calculadora nueva debe ser cero.",
                   "given": "Dado que tengo una calculadora nueva",
-                  "when": "",
+                  "when": "prueba",
                   "then": "Entonces el resultado debe ser 0",
                   "clases_unitarias": {
                     "contexto": "CalculadoraSpecTest.java",
@@ -44,7 +49,8 @@
                 {
                   "titulo": "Sumar varios casos",
                   "tags": "@suma @parametrizado @happyPath",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Valida suma con casos positivos, negativos y decimales.",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en <valor_inicial> y sumo <sumando>",
@@ -57,7 +63,8 @@
                 {
                   "titulo": "Overflow suma",
                   "tags": "@suma @error @overflow",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "El sistema debe detectar overflow aritmético.",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en Double.MAX_VALUE y sumo Double.MAX_VALUE",
@@ -70,7 +77,8 @@
                 {
                   "titulo": "Restas parametrizadas",
                   "tags": "@resta @parametrizado @happyPath",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Valida operación resta en distintos escenarios.",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en <valor_inicial> y resto <sustraendo>",
@@ -83,7 +91,8 @@
                 {
                   "titulo": "Multiplicaciones varias",
                   "tags": "@multiplicacion @parametrizado",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Soporta multiplicación por cero, negativos y decimales.",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en <valor_inicial> y multiplico por <multiplicador>",
@@ -96,7 +105,8 @@
                 {
                   "titulo": "Divisiones válidas",
                   "tags": "@division @happyPath",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Casos de división con valores válidos.",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en <valor_inicial> y divido entre <divisor>",
@@ -109,7 +119,8 @@
                 {
                   "titulo": "División por cero",
                   "tags": "@division @error",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Error al dividir entre cero",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en 10 y divido entre 0",
@@ -122,7 +133,8 @@
                 {
                   "titulo": "Potencias válidas (parametrizado)",
                   "tags": "@potencia @happyPath",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Casos variados de potencias válidas.",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en <base> y elevo a la potencia <exponente>",
@@ -135,7 +147,8 @@
                 {
                   "titulo": "Cero a potencia negativa",
                   "tags": "@potencia @error",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "0 elevado a exponente negativo genera error.",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en 0 y elevo a la potencia -2",
@@ -148,7 +161,8 @@
                 {
                   "titulo": "Raíces cuadradas válidas",
                   "tags": "@raiz @happyPath",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Cálculo válido de raíz cuadrada.",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en <numero> y calculo la raíz cuadrada",
@@ -161,7 +175,8 @@
                 {
                   "titulo": "Raíz de negativo",
                   "tags": "@raiz @error",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Raíz de número negativo genera error.",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en -4 y calculo la raíz cuadrada",
@@ -174,7 +189,8 @@
                 {
                   "titulo": "Operaciones encadenadas complejas",
                   "tags": "@encadenado @happyPath",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Prueba de cálculo compuesto multietapa",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en 5 y sumo 3 y multiplico por 2 y resto 4",
@@ -187,7 +203,8 @@
                 {
                   "titulo": "Error detiene operaciones encadenadas",
                   "tags": "@encadenado @error",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Detecta error y detiene operaciones siguientes",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en 10 y divido entre 0 y sumo 5 y multiplico por 2",
@@ -200,7 +217,8 @@
                 {
                   "titulo": "Reset después de operaciones",
                   "tags": "@reset @happyPath",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Reinicio tras operaciones exitosas",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando establezco el valor en 100 y sumo 50 y reseteo la calculadora",
@@ -213,7 +231,8 @@
                 {
                   "titulo": "Reset después de error",
                   "tags": "@reset @error",
-                  "estado": "Aprobado",
+                  "estado": "En desarrollo",
+				  "notas": "prueba",
                   "comentario": "Limpieza del estado tras error crítico",
                   "given": "Dado que tengo una calculadora nueva",
                   "when": "Cuando divido entre 0 y reseteo la calculadora",

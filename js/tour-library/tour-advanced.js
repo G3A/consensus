@@ -1,4 +1,4 @@
-// Extensión avanzada del tour con más funcionalidades
+// Extensión avanzada del tour
 class AdvancedTour extends InteractiveTour {
     constructor(config) {
         super(config);
@@ -17,16 +17,20 @@ class AdvancedTour extends InteractiveTour {
     
     initKeyboardNavigation() {
         document.addEventListener('keydown', (e) => {
-            if (!this.overlay.classList.contains('active')) return;
+            // Verificar si el tour está activo usando la clase del body
+            if (!document.body.classList.contains('tour-active')) return;
             
             switch(e.key) {
                 case 'ArrowLeft':
+                    e.preventDefault();
                     this.previousStep();
                     break;
                 case 'ArrowRight':
+                    e.preventDefault();
                     this.nextStep();
                     break;
                 case 'Escape':
+                    e.preventDefault();
                     this.finish();
                     break;
             }
@@ -42,24 +46,25 @@ class AdvancedTour extends InteractiveTour {
             timestamp: new Date().toISOString()
         };
         
-        localStorage.setItem('tourProgress', JSON.stringify(progress));
+        localStorage.setItem('consensusTourProgress', JSON.stringify(progress));
     }
     
     loadProgress() {
         if (!this.storage) return;
         
-        const saved = localStorage.getItem('tourProgress');
+        const saved = localStorage.getItem('consensusTourProgress');
         if (saved) {
             const progress = JSON.parse(saved);
             
-            // Si el tour no se completó, preguntar si desea continuar
             if (!progress.completed && progress.currentStep > 0) {
                 const daysSince = Math.floor((new Date() - new Date(progress.timestamp)) / (1000 * 60 * 60 * 24));
-                if (daysSince < 7) { // Solo preguntar si han pasado menos de 7 días
-                    if (confirm('¿Desea continuar el tour donde lo dejó?')) {
-                        this.currentStep = progress.currentStep;
-                        this.start();
-                    }
+                if (daysSince < 7) {
+                    setTimeout(() => {
+                        if (confirm('¿Desea continuar el tour donde lo dejó?')) {
+                            this.currentStep = progress.currentStep;
+                            this.start();
+                        }
+                    }, 1000);
                 }
             }
         }
@@ -108,10 +113,9 @@ class AdvancedTour extends InteractiveTour {
                 completed: true,
                 timestamp: new Date().toISOString()
             };
-            localStorage.setItem('tourProgress', JSON.stringify(progress));
+            localStorage.setItem('consensusTourProgress', JSON.stringify(progress));
         }
         
-        // Remover barra de progreso si existe
         const progressBar = document.getElementById('tourProgressBar');
         if (progressBar) {
             progressBar.remove();
